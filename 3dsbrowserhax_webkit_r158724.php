@@ -4,7 +4,7 @@
 
 include_once("/home/yellows8/ninupdates/weblogging.php");
 
-include_once("browserhax_cfg.php");
+include_once("/home/yellows8/browserhax/browserhax_cfg.php");
 
 $logging_dir = "/home/yellows8/ninupdates/weblogs/private";
 
