@@ -1267,7 +1267,7 @@ function generateropchain_type2()
 	ropgen_writeu32($ROPHEAP, 0x0100FFFF, 0, 1);
 	ropgen_callfunc(0x1ED02A04-0x1EB00000, $ROPHEAP, 0x4, 0x0, $POPPC, $GSP_WRITEHWREGS);//Set the sub-screen colorfill reg so that yellow is displayed.
 
-	ropgen_callfunc($LINEAR_CODETMPBUF, 0x10000, 0x0, 0x0, $POPPC, $ROP_MEMSETOTHER);
+	ropgen_callfunc($LINEAR_TMPBUF, 0x11000, 0x0, 0x0, $POPPC, $ROP_MEMSETOTHER);
 
 	if($arm11code_loadfromsd==0)
 	{
