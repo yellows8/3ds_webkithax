@@ -186,6 +186,7 @@ if($browserver == 1)
 	$GXLOW_CMD4 = 0x002c565c;
 	$GSP_FLUSHDCACHE = 0x00345ec8;
 	$GSP_WRITEHWREGS = 0x002b6c44;
+	$GSPGPU_SERVHANDLEADR = 0x003b9438;
 
 	$IFile_Open = 0x0025bc00;
 	$IFile_Close = 0x0025bd20;
@@ -256,6 +257,7 @@ else if($browserver == 2)
 	$GXLOW_CMD4 = 0x002c62e4;
 	$GSP_FLUSHDCACHE = 0x00344b80;
 	$GSP_WRITEHWREGS = 0x002b8008;
+	$GSPGPU_SERVHANDLEADR = 0x003b643c;
 
 	$IFile_Open = 0x0025b0a4;
 	$IFile_Close = 0x0025b1c4;
@@ -323,6 +325,7 @@ else if($browserver == 3)
 		$GXLOW_CMD4 = 0x0011dd80;
 		$GSP_FLUSHDCACHE = 0x001914f8;
 		$GSP_WRITEHWREGS = 0x0011e188;//inr0=regadr inr1=bufptr inr2=bufsz
+		$GSPGPU_SERVHANDLEADR = 0x003da72c;
 
 		$IFile_Open = 0x0022fe44;
 		$IFile_Close = 0x001fdbc0;
@@ -445,6 +448,7 @@ else if($browserver == 4)
 	$GXLOW_CMD4 = 0x0011dd48;
 	$GSP_FLUSHDCACHE = 0x00191500;
 	$GSP_WRITEHWREGS = 0x0011e150;
+	$GSPGPU_SERVHANDLEADR = 0x003da72c;
 
 	$IFile_Open = 0x0022fe08;
 	$IFile_Close = 0x001fdba4;
@@ -1253,7 +1257,7 @@ function generateropchain_type1()
 
 function generateropchain_type2()
 {
-	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $APT_PrepareToDoApplicationJump, $APT_DoApplicationJump, $arm11code_loadfromsd;
+	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, $APT_PrepareToDoApplicationJump, $APT_DoApplicationJump, $arm11code_loadfromsd;
 
 	$LINEAR_TMPBUF = 0x18B40000;
 	$LINEAR_CODETMPBUF = $LINEAR_TMPBUF + 0x1000;
@@ -1342,9 +1346,13 @@ function generateropchain_type2()
 	$databuf[15] = $GSP_WRITEHWREGS;
 	$databuf[16] = $APT_PrepareToDoApplicationJump;
 	$databuf[17] = $APT_DoApplicationJump;
-	$databuf[18] = 0x0;//flags
+	$databuf[18] = 0x2;//flags
 	$databuf[19] = 0x0;
-	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 20*4);
+	$databuf[20] = 0x0;
+	$databuf[21] = 0x0;
+	$databuf[22] = $GSPGPU_SERVHANDLEADR;//GSPGPU handle*
+	$databuf[23] = 0x114;//NS appID
+	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 24*4);
 
 	$ROPCHAIN.= genu32_unicode($POPLRPC);
 	$ROPCHAIN.= genu32_unicode($ROP_POP_R0R6PC);
