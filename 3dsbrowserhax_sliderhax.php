@@ -6,6 +6,7 @@ $con = "<html>
 //http://trac.webkit.org/changeset/158724
 //Different version of 3dsbrowserhax_webkit_r158724.php which also works with new3ds. Most of the below html/js is by kemurphy, the heap spray stuff / etc is by yellows8.
 //It seems the alert(\"test2\") call is needed, otherwise the vuln doesn't (always?) trigger.
+//The heap spraying for overwriting the target heap data has to be done under one() not a dedicated function, otherwise the data isn't overwritten correctly.
 
 var s = new String(unescape(\"12341234\"));
 var pwt = null;
