@@ -1447,7 +1447,7 @@ function generateropchain_type2()
 	$databuf[15] = $GSP_WRITEHWREGS;
 	$databuf[16] = 0;//$APT_PrepareToDoApplicationJump;
 	$databuf[17] = 0;//$APT_DoApplicationJump;
-	$databuf[18] = 0x2;//flags
+	$databuf[18] = 0x40;//flags
 	$databuf[19] = 0x0;
 	$databuf[20] = 0x0;
 	$databuf[21] = 0x0;
