@@ -50,10 +50,17 @@ if(strstr($ua, "1.7412"))//1.7412 v6/2.0.0-2
 } else if(strstr($ua, "1.7567"))//1.7567 v4096/7.1.0-16
 {
 	$browserver = 4;
+} else if(strstr($ua, "1.7585"))//1.7585 v5121/9.5.0-23
+{
+	$browserver = 4;
 }
 
 //new3ds: Mobile-NintendoBrowser-version titlever sysver
 if(strstr($ua, "1.0.9934"))//1.0.9934 v10 9.0.0-20
+{
+	$browserver = 0x80;
+}
+else if(strstr($ua, "1.1.9996"))// 1.1.9996 v1027 9.3.0-21
 {
 	$browserver = 0x80;
 }
