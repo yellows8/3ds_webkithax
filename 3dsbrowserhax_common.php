@@ -440,7 +440,7 @@ else if($browserver == 0x80)//new3ds
 	init_mapaddrs_cro();
 
 	$STACKPIVOT_ADR = 0x00279a10;
-	$THROW_FATALERR = 0x001f10fc;
+	$THROW_FATALERR = 0x001f10f8;
 	$COND_THROWFATALERR = 0x00261148;
 
 	$ROP_POP_R0R6PC = 0x001de9f0;
@@ -497,51 +497,50 @@ else if($browserver == 0x80)//new3ds
 }
 else if($browserver == 0x81)
 {
-	$CODEBLK_ENDADR = 0x00422000;//These likely need updated.
+	$CODEBLK_ENDADR = 0x00426000;
 	$OSSCRO_HEAPADR = 0x0810e000;
-	$WEBKITCRO_HEAPADR = 0x083cc000;
-	$PEERCRO_HEAPADR = 0x082e7000;
+	$PEERCRO_HEAPADR = 0x082ed000;
+	$WEBKITCRO_HEAPADR = 0x083d2000;
 	$APPHEAP_PHYSADDR = 0x2b000000;
 	init_mapaddrs_cro();
 
 	$STACKPIVOT_ADR = 0x00279c54;
-//Rest of these need updated.
-	$THROW_FATALERR = 0x001f10fc;
-	$COND_THROWFATALERR = 0x00261148;
+	$THROW_FATALERR = 0x001f1894;
+	$COND_THROWFATALERR = 0x0026134c;
 
-	$ROP_POP_R0R6PC = 0x001de9f0;
-	$ROP_POP_R0R8PC = 0x00309fdc;
-	$ROP_POP_R0IPPC = $WEBKITCRO_MAPADR+0x001b2d04;
-	$ROP_POP_R0PC = 0x002954e8;
-	$ROP_POP_R1R5PC = 0x001dbfd0;
+	$ROP_POP_R0R6PC = 0x001df0f4;
+	$ROP_POP_R0R8PC = 0x0030a848;
+	$ROP_POP_R0IPPC = $WEBKITCRO_MAPADR+0x001b2d0c;
+	$ROP_POP_R0PC = 0x002958fc;
+	$ROP_POP_R1R5PC = 0x001dc6d4;
 
-	$ROP_STR_R1TOR0 = 0x002258a4;
-	$ROP_LDR_R0FROMR0 = 0x001f6a60;
+	$ROP_STR_R1TOR0 = 0x002261f4;
+	$ROP_LDR_R0FROMR0 = 0x001f71fc;
 	//$ROP_STR_R1_TOR0_SHIFTR2 = 0x00332a14;//needs updated (doesn't exist with SKATER)
-	$ROP_LDR_R0_FROMR0_SHIFTR1 = $OSSCRO_MAPADR+0xf8cfc;
-	$ROP_ADDR0_TO_R1 = 0x0027a2c0;
+	$ROP_LDR_R0_FROMR0_SHIFTR1 = $OSSCRO_MAPADR+0xfd724;
+	$ROP_ADDR0_TO_R1 = 0x0027a504;
 
-	$ROP_LDMSTM_R5R4_R0R3 = 0x001e7d10;//"cmp r0, #0" "ldmne r5, {r0, r1, r2, r3}" "stmne r6, {r0, r1, r2, r3}" branch to: "vpop {d8}" "pop {r4, r5, r6, pc}"
+	$ROP_LDMSTM_R5R4_R0R3 = 0x001e8414;//"cmp r0, #0" "ldmne r5, {r0, r1, r2, r3}" "stmne r6, {r0, r1, r2, r3}" branch to: "vpop {d8}" "pop {r4, r5, r6, pc}"
 
-	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x00295b8c;//Same code as browserver val3.
+	$ROP_WRITETHREADSTORAGEPTR_TOR4R5 = 0x00295fa0;//Same code as browserver val3.
 
 	$ROP_STMR0_R0PC = $PEERCRO_MAPADR+0x1ee9d;//Thumb: "stmia r0!, {r1, r2, r3, r4, r5, r6, r7}" nop "movs r0, #20". branch to: "pop {r4, r5, r6, pc}"
 
-	$SRVPORT_HANDLEADR = 0x003d9f80;
-	$SRV_REFCNT = 0x003d9da8;
+	$SRVPORT_HANDLEADR = 0x003ddf80;
+	$SRV_REFCNT = 0x003ddda8;
 	$srvpm_initialize = 0x001ea3cc;
-	$srv_shutdown = 0x0028c9e4;//needs updated
-	$srv_GetServiceHandle = 0x001e9ce4;
+	$srv_shutdown = 0x0028cde8;
+	$srv_GetServiceHandle = 0x001ea3e8;
 
-	$svcGetProcessId = 0x0026a608;
-	$svcSendSyncRequest = 0x001ea320;
-	$svcControlMemory = 0x00261eb8;
-	$svcSleepThread = 0x002d6a5c;
+	$svcGetProcessId = 0x0026a80c;
+	$svcSendSyncRequest = 0x001eaa24;
+	$svcControlMemory = 0x002620bc;
+	$svcSleepThread = 0x002d7448;
 
-	$GXLOW_CMD4 = 0x002a08d0;
-	$GSP_FLUSHDCACHE = 0x0029c02c;
-	$GSP_WRITEHWREGS = 0x002968bc;
-	$GSPGPU_SERVHANDLEADR = 0x003da3d0;
+	$GXLOW_CMD4 = 0x002a0e94;
+	$GSP_FLUSHDCACHE = 0x0029c5e0;
+	$GSP_WRITEHWREGS = 0x00296cd0;
+	$GSPGPU_SERVHANDLEADR = 0x003de3d0;
 
 	$IFile_Open = 0x0022fe08;//needs updated
 	$IFile_Close = 0x001fdba4;//needs updated
@@ -550,11 +549,11 @@ else if($browserver == 0x81)
 	$IFile_Read = 0x001686dc;//needs updated
 	$IFile_Write = 0x00168764;//needs updated
 
-	$FS_DELETEFILE = 0x0032368c;
+	$FS_DELETEFILE = 0x00323dd4;
 
-	$FSFILEIPC_CLOSE = 0x00266764;
-	$FSFILEIPC_READ = 0x0026670c;
-	$FSFILEIPC_GETSIZE = 0x003324c4;
+	$FSFILEIPC_CLOSE = 0x00266968;
+	$FSFILEIPC_READ = 0x00266910;
+	$FSFILEIPC_GETSIZE = 0x00332b00;
 
 	//$OPENFILEDIRECTLY_WRAP = 0x0027b600;//needs updated (doesn't exist with SKATER)
 
@@ -607,17 +606,18 @@ else if($browserver == 0x80)//new3ds
 }
 else if($browserver == 0x81)//new3ds
 {
-	//Need to check/update these.
-	$WKC_FOPEN = $OSSCRO_MAPADR+0xd493c;
-	$WKC_FCLOSE = $OSSCRO_MAPADR+0xd492c;
-	$WKC_FREAD = $OSSCRO_MAPADR+0xd4934;
-	$WKC_FWRITE = $OSSCRO_MAPADR+0xd4944;
-	$WKC_FSEEK = $OSSCRO_MAPADR+0xd475c;
+	$ROP_STR_R0TOR1 = $WEBKITCRO_MAPADR+0x421df8;
 
-	$ROP_curl_easy_cleanup = $WEBKITCRO_MAPADR+0x4db5bc;
-	$ROP_curl_easy_init = $WEBKITCRO_MAPADR+0x4db124;
-	$ROP_curl_easy_perform = $WEBKITCRO_MAPADR+0x4db684;
-	$ROP_curl_easy_setopt = $WEBKITCRO_MAPADR+0x4db12c;
+	$WKC_FOPEN = $OSSCRO_MAPADR+0xd9364;
+	$WKC_FCLOSE = $OSSCRO_MAPADR+0xd9354;
+	$WKC_FREAD = $OSSCRO_MAPADR+0xd935c;
+	$WKC_FWRITE = $OSSCRO_MAPADR+0xd936c;
+	$WKC_FSEEK = $PEERCRO_MAPADR+0x1f789;
+
+	$ROP_curl_easy_cleanup = $WEBKITCRO_MAPADR+0x4db5a8;
+	$ROP_curl_easy_init = $WEBKITCRO_MAPADR+0x4db110;
+	$ROP_curl_easy_perform = $WEBKITCRO_MAPADR+0x4db670;
+	$ROP_curl_easy_setopt = $WEBKITCRO_MAPADR+0x4db118;
 }
 
 if($browserver < 0x80)
@@ -627,8 +627,16 @@ if($browserver < 0x80)
 }
 else if($browserver >= 0x80)
 {
-	$ROP_MEMCPY = $WEBKITCRO_MAPADR+0x4da9cc;
-	$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x4da9ac;
+	if($browserver == 0x80)
+	{
+		$ROP_MEMCPY = $WEBKITCRO_MAPADR+0x4da9cc;
+		$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x4da9ac;
+	}
+	else if($browserver == 0x81)
+	{
+		$ROP_MEMCPY = $WEBKITCRO_MAPADR+0x4da9b8;
+		$ROP_MEMSETOTHER = $WEBKITCRO_MAPADR+0x4da998;
+	}
 }
 
 if($browserver>=0x80)
@@ -647,7 +655,7 @@ if($browserver < 0x80)
 else
 {
 	if($browserver == 0x80)$POPPC = 0x001de80c;
-	if($browserver == 0x81)$POPPC = 0x90909090;//0x001de80c;
+	if($browserver == 0x81)$POPPC = 0x001def10;
 }
 
 $NOPSLEDROP = genu32_unicode_jswrap($POPPC);//"pop {pc}"
