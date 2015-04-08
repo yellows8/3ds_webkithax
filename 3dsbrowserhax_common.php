@@ -1279,9 +1279,16 @@ function ropgen_httpdownload($bufaddr, $bufsize, $filepath, $url, $delete_tmpfil
 
 function ropgen_httpdownload_binary($bufaddr, $bufsize, $binid)
 {
-	global $ropchainparam, $DEVUNIT;
+	global $ropchainparam, $DEVUNIT, $cfg_arm11code_payloadbaseurl;
 
-	$url = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];
+	if(!isset($cfg_arm11code_payloadbaseurl))
+	{
+		$url = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];
+	}
+	else
+	{
+		$url = $cfg_arm11code_payloadbaseurl;
+	}
 	$url .= "?getbin=$binid";
 
 	ropgen_httpdownload($bufaddr, $bufsize, "", $url, 1);
