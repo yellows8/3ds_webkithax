@@ -52,6 +52,12 @@ if($browserver < 0x80)
 			}
 		}
 	}
+
+	if($browserver >= 5)
+	{
+		$VTABLEPTR += 0x1a000;
+		$STACKPTR_ADR += 0xa000;
+	}
 }
 
 $ROPHEAP = $VTABLEPTR;
