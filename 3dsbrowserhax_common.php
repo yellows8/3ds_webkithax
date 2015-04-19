@@ -544,12 +544,12 @@ else if($browserver == 0x80)//new3ds
 	$GSP_WRITEHWREGS = 0x002968bc;
 	$GSPGPU_SERVHANDLEADR = 0x003da3d0;
 
-	$IFile_Open = 0x0022fe08;//needs updated
-	$IFile_Close = 0x001fdba4;//needs updated
-	$IFile_GetSize = 0x00207514;//needs updated
-	$IFile_Seek = 0x00151694;//needs updated
-	$IFile_Read = 0x001686dc;//needs updated
-	$IFile_Write = 0x00168764;//needs updated
+	$IFile_Open = 0x0031fe74;
+	$IFile_Close = 0x001eb8cc;
+	$IFile_GetSize = 0x001f1128;
+	$IFile_Seek = 0x0032b508;
+	$IFile_Read = 0x0030a094;
+	$IFile_Write = 0x00324dd0;
 
 	$FS_DELETEFILE = 0x0032368c;
 
@@ -609,12 +609,12 @@ else if($browserver == 0x81)
 	$GSP_WRITEHWREGS = 0x00296cd0;
 	$GSPGPU_SERVHANDLEADR = 0x003de3d0;
 
-	$IFile_Open = 0x0022fe08;//needs updated
-	$IFile_Close = 0x001fdba4;//needs updated
-	$IFile_GetSize = 0x00207514;//needs updated
-	$IFile_Seek = 0x00151694;//needs updated
-	$IFile_Read = 0x001686dc;//needs updated
-	$IFile_Write = 0x00168764;//needs updated
+	$IFile_Open = 0x003205bc;
+	$IFile_Close = 0x001ec068;
+	$IFile_GetSize = 0x001f18c4;
+	$IFile_Seek = 0x0032bb1c;
+	$IFile_Read = 0x0030a96c;
+	$IFile_Write = 0x0032544c;
 
 	$FS_DELETEFILE = 0x00323dd4;
 
@@ -1690,6 +1690,7 @@ function generateropchain_type2()
 	$databuf[21] = 0x0;
 	$databuf[22] = $GSPGPU_SERVHANDLEADR;//GSPGPU handle*
 	$databuf[23] = 0x114;//NS appID
+	$databuf[25] = $LINEAR_CODETMPBUF;
 	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 24*4);
 
 	$ROPCHAIN.= genu32_unicode($POPLRPC);
