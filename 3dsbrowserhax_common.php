@@ -1690,8 +1690,9 @@ function generateropchain_type2()
 	$databuf[21] = 0x0;
 	$databuf[22] = $GSPGPU_SERVHANDLEADR;//GSPGPU handle*
 	$databuf[23] = 0x114;//NS appID
+	$databuf[24] = 0;
 	$databuf[25] = $LINEAR_CODETMPBUF;
-	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 24*4);
+	ropgen_writeregdata_wrap($LINEAR_TMPBUF, $databuf, 0, 26*4);
 
 	$ROPCHAIN.= genu32_unicode($POPLRPC);
 	$ROPCHAIN.= genu32_unicode($ROP_POP_R0R6PC);
