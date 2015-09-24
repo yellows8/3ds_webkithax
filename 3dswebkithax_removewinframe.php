@@ -1,9 +1,5 @@
 <?php
 
-include_once("/home/yellows8/ninupdates/weblogging.php");
-
-$logging_dir = "/home/yellows8/ninupdates/weblogs/private";
-
 include_once("/home/yellows8/browserhax/browserhax_cfg.php");
 
 include_once("3dsbrowserhax_common.php");
@@ -11,8 +7,13 @@ include_once("3dsbrowserhax_common.php");
 if(($browserver & 0x80) == 0)
 {
 	echo "This browser is not supported.\n";
-	writeNormalLog("RESULT: 200 BROWSER NOT SUPPORTED");
-	return;
+	//error_log("3dswebkithax_removewinframe.php: BROWSER NOT SUPPORTED.");
+	exit;
+} else if($browserver >= 0x83)
+{
+	echo "This browser is not supported since the webkit vuln is fixed with this version.\n";
+	//error_log("3dswebkithax_removewinframe.php: BROWSER NOT SUPPORTED(VULNFIXED).");
+	exit;
 }
 
 $VTABLE_JUMPADR = $WEBKITCRO_MAPADR+0x3825;//The use-after-free object's "vtable" is set to an address nearby where the heap-spray data is located. This is the address which gets jumped to when the use-after-free vtable funcptr call is executed. r0 = <use-after-free object address>. This gadget does the following: 1) r0 = *r0 2) r0 = *(r0+8) 3) <return if r0==0> 4) r0 = *(r0+0x34) 5) r0 = *(r0+4) 6) calls vtable funcptr +16 from the object @ r0, with r1=1 and r2=<funcptr adr>.
