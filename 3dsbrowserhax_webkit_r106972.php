@@ -13,6 +13,12 @@ if(($browserver & 0x80) == 0)
 		$VTABLEPTR = 0x0964f018;
 		$STACKPTR_ADR = 0x09670024;
 		$OBJDATAPAYLOAD_ADDR = 0x091cb000;
+
+		if(($browserver & 0xf) == 0x2)//Only tested with KOR v4.2.
+		{
+			$VTABLEPTR = 0x0960e018;
+			$STACKPTR_ADR = $VTABLEPTR + 0x11000;
+		}
 	}
 	else
 	{
