@@ -8,7 +8,7 @@ include_once("3dsbrowserhax_common.php");
 
 if(($browserver & 0x80) == 0)
 {
-	if(($browserver & 0xf) == 0x7)
+	if(($browserver & 0xf) <= 0x7)
 	{
 		$VTABLEPTR = 0x0964f018;
 		$STACKPTR_ADR = 0x09670024;
