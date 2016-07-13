@@ -22,6 +22,12 @@ if(($browserver & 0x80) == 0)
 			$STACKPTR_ADR = $VTABLEPTR;
 			$VTABLEPTR = 0x08ca0018;
 		}
+
+		if(($browserver & 0xf) <= 0x4)
+		{
+			$VTABLEPTR = 0x08c92018;
+			$STACKPTR_ADR = 0x08cb3018;
+		}
 	}
 	else
 	{
